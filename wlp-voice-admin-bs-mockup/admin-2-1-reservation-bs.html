@@ -1,0 +1,495 @@
+<title>BS 2-1. 리스닝 파티 예약 (목업)</title>
+<style>
+  :root{
+    --navy:#0b1226;
+    --cyan:#00c9c0;
+    --cyan-dark:#00a8a0;
+    --mint-bg:#eafbfa;
+    --mint-border:#b7ece7;
+    --yellow-bg:#fff6cf;
+    --yellow-border:#f0ce3a;
+    --yellow-border-strong:#e0b400;
+    --text:#1b1f28;
+    --text-sub:#6b7280;
+    --text-faint:#9aa1ad;
+    --border:#e5e7eb;
+    --border-strong:#d7dbe1;
+    --red:#e5484d;
+    --note-border:#adb5c2;
+    --note-bg:#f4f5f8;
+    --note-tag:#5b6270;
+    --note-text:#585f6c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",Segoe UI,Roboto,sans-serif;
+    color:var(--text);background:#fff;font-size:13px;line-height:1.5;
+  }
+
+  /* ===== BS CHROME ===== */
+  .bs-topbar{
+    height:26px;background:var(--navy);color:#c9cdd8;display:flex;align-items:center;
+    justify-content:space-between;padding:0 16px;font-size:11px;
+  }
+  .bs-topbar-left{display:flex;gap:10px;align-items:center;}
+  .bs-topbar-left .bs-logo{color:#fff;font-weight:700;}
+  .bs-topbar-right{display:flex;gap:14px;color:#9aa1b3;}
+
+  .bs-subbar{
+    height:52px;background:#fff;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;padding:0 16px;
+  }
+  .bs-community{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;}
+  .bs-comm-logo{
+    width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#7b3ff2,#c23fd8);
+    color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;
+  }
+  .bs-tabs{display:flex;gap:22px;}
+  .bs-tab{font-size:13px;color:var(--text-sub);padding:6px 2px;cursor:default;}
+  .bs-tab.active{color:var(--text);font-weight:700;border-bottom:2px solid var(--text);}
+
+  .bs-body{display:flex;}
+  .bs-sidebar{
+    width:158px;flex:0 0 158px;background:#fff;border-right:1px solid var(--border);
+    padding:10px 0;min-height:calc(100vh - 78px);
+  }
+  .bs-nav-item{
+    padding:10px 16px;font-size:12.5px;color:#525866;cursor:default;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .bs-nav-item .chev{font-size:9px;opacity:.6;}
+  .bs-nav-item.active-group{color:var(--text);font-weight:700;}
+  .bs-nav-sub .bs-nav-subitem{
+    padding:8px 16px 8px 26px;font-size:12px;color:var(--text-sub);
+  }
+  .bs-nav-sub .bs-nav-subitem.active{color:var(--cyan-dark);font-weight:700;border-left:2px solid var(--cyan-dark);padding-left:24px;background:var(--mint-bg);}
+  .bs-sidebar-foot{margin-top:20px;padding:10px 16px;font-size:11.5px;color:var(--text-faint);}
+
+  .bs-main{flex:1;min-width:0;padding:26px 40px 70px;max-width:920px;}
+  .title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .page-title{font-size:19px;font-weight:700;margin:0;}
+  .btn{
+    height:32px;padding:0 16px;border-radius:4px;font-size:12.5px;font-weight:600;
+    border:1px solid var(--border-strong);background:#fff;color:var(--text);cursor:default;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn-primary{background:var(--cyan);border-color:var(--cyan-dark);color:#012826;}
+
+  .page-sub{color:var(--text-sub);font-size:12px;margin:0 0 16px;}
+  .legend{display:flex;gap:16px;align-items:center;margin-bottom:18px;font-size:12px;color:var(--text-sub);flex-wrap:wrap;}
+  .legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-2px;}
+  .legend .sw-yellow{background:var(--yellow-border);border:1px solid var(--yellow-border-strong);}
+  .legend .sw-note{background:var(--note-bg);border:1px dashed var(--note-border);}
+
+  /* ===== FIELD ROWS ===== */
+  .field-row{display:flex;flex-direction:column;gap:8px;padding:18px 0;border-bottom:1px solid #f1f2f4;}
+  .field-row:first-of-type{padding-top:2px;}
+  .field-label-row{display:flex;align-items:center;gap:5px;}
+  .field-label{font-weight:700;font-size:13px;color:var(--text);}
+  .req-star{color:var(--red);margin-right:2px;}
+  .num-badge{
+    flex:0 0 auto;width:18px;height:18px;border-radius:50%;border:1px solid var(--border-strong);
+    color:var(--text-sub);font-size:10.5px;display:flex;align-items:center;justify-content:center;
+    background:#fafafa;font-weight:600;
+  }
+  .no-tag{
+    flex:0 0 auto;font-size:10px;font-weight:800;color:#fff;
+    background:linear-gradient(180deg,#ff9a3d,#ff7a00);border:1px solid #e56800;
+    border-radius:3px;padding:2px 6px;letter-spacing:.2px;white-space:nowrap;
+    box-shadow:0 1px 2px rgba(255,122,0,.35);
+  }
+  .field-body{width:100%;}
+  .help-text{color:var(--text-sub);font-size:11.5px;margin-top:6px;line-height:1.7;}
+
+  /* segmented control (공개/비공개) */
+  .seg-control{display:inline-flex;border:1px solid var(--border-strong);border-radius:4px;overflow:hidden;}
+  .seg-btn{padding:7px 20px;font-size:12.5px;color:var(--text-sub);background:#fff;cursor:default;}
+  .seg-btn.selected{background:#fff;color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1px var(--text);}
+  .seg-btn + .seg-btn{border-left:1px solid var(--border-strong);}
+
+  /* thumbnail */
+  .thumb-box{
+    width:180px;height:180px;border-radius:6px;background:#e9eaee;border:1px solid var(--border);
+  }
+  .thumb-actions{display:flex;gap:8px;margin-top:10px;}
+  .btn-mini{
+    height:30px;padding:0 12px;border-radius:4px;border:1px solid var(--border-strong);
+    background:#fff;font-size:11.5px;color:var(--text);display:flex;align-items:center;gap:5px;
+  }
+
+  /* title table */
+  table.title-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  table.title-table td{padding:8px 0;vertical-align:top;}
+  .lang-cell{width:140px;display:flex;align-items:center;gap:8px;font-size:12.5px;}
+  .title-input-wrap{position:relative;}
+  .title-input-wrap input,.title-input-wrap textarea{
+    width:100%;border:1px solid var(--border-strong);border-radius:4px;font-size:12.5px;
+    padding:8px 10px;font-family:inherit;color:var(--text);
+  }
+  .title-input-wrap textarea{height:70px;resize:none;margin-top:6px;}
+  .char-count{position:absolute;right:10px;top:9px;font-size:10.5px;color:var(--text-faint);}
+  .add-row-btn{
+    width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+    border-radius:4px;background:#525866;color:#fff;font-size:16px;margin-top:8px;
+  }
+
+  /* playlist */
+  .add-track-btn{
+    display:flex;align-items:center;justify-content:center;height:38px;
+    border:1px dashed var(--border-strong);border-radius:4px;color:var(--text-sub);
+    font-size:12.5px;background:#fafbfc;
+  }
+
+  /* fake input */
+  .fake-input{
+    height:34px;border:1px solid var(--border-strong);border-radius:4px;padding:0 10px;
+    font-size:12.5px;color:var(--text-faint);display:flex;align-items:center;justify-content:space-between;
+    width:280px;
+  }
+
+  /* radios */
+  .radio-group{display:flex;flex-direction:column;gap:12px;}
+  .radio-row{display:flex;align-items:flex-start;gap:8px;}
+  .radio-row input[type=radio]{width:16px;height:16px;accent-color:var(--cyan-dark);margin-top:2px;flex:0 0 auto;}
+  .radio-row label{font-size:13px;}
+  .radio-sub{color:var(--text-sub);font-size:11.5px;margin-top:2px;line-height:1.6;margin-left:24px;}
+
+  /* new-item highlight */
+  .field-row.new-item{
+    background:var(--yellow-bg);border:1px solid var(--yellow-border);border-radius:6px;
+    margin:6px 0;padding:16px;
+  }
+  .new-tag{
+    display:inline-flex;align-items:center;background:var(--yellow-border-strong);color:#3a2c00;
+    font-size:10px;font-weight:800;border-radius:3px;padding:1px 6px;margin-left:8px;letter-spacing:.3px;
+  }
+  .toggle{position:relative;width:40px;height:22px;border-radius:12px;background:#d7dbe1;flex:0 0 auto;}
+  .toggle .knob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);}
+  .toggle.on{background:var(--cyan);}
+  .toggle.on .knob{left:20px;}
+  .toggle-row{display:flex;align-items:center;gap:10px;}
+  .toggle-state{font-size:12.5px;font-weight:700;color:var(--text-sub);}
+  .toggle-state.is-on{color:var(--cyan-dark);}
+  .lokalise-badge{
+    display:inline-flex;align-items:center;background:var(--red);color:#fff;font-size:9.5px;font-weight:800;
+    border-radius:3px;padding:1px 5px;margin-right:6px;letter-spacing:.2px;
+  }
+  .talk-notice{
+    display:none;margin-top:10px;background:#fff;border:1px solid #f3c2c4;border-radius:4px;
+    padding:8px 10px;font-size:11.5px;color:#8a1a1e;align-items:center;
+  }
+  .talk-notice.show{display:flex;}
+
+  /* prd-note */
+  .prd-note{
+    margin-top:10px;border:1px dashed var(--note-border);background:var(--note-bg);border-radius:5px;
+    padding:9px 11px;display:flex;gap:8px;align-items:flex-start;
+  }
+  .prd-note .note-tag{
+    flex:0 0 auto;background:var(--note-tag);color:#fff;font-size:9.5px;font-weight:800;
+    border-radius:3px;padding:2px 6px;white-space:nowrap;letter-spacing:.2px;margin-top:1px;
+  }
+  .prd-note .note-body{font-size:11px;color:var(--note-text);line-height:1.65;}
+  .prd-note .note-body b{color:#3d4250;}
+  .prd-note .note-body ul{margin:4px 0 0;padding-left:15px;}
+  .prd-note .note-body li{margin-bottom:3px;}
+  .prd-note .note-body>.lead{color:#8a1a1e;font-weight:700;}
+
+  .form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:24px;}
+
+  /* ===== INFO POPOVER SYSTEM (2026-08 개편: 설명은 hover/click 시에만 노출, 실제 화면 개입 최소화) ===== */
+  .info-trigger{cursor:pointer;user-select:none;}
+  .info-dot{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:16px;height:16px;border-radius:50%;flex:0 0 auto;
+    background:#eef0f4;color:#6b7280;font-size:10px;font-weight:800;
+    border:1px solid #d7dbe1;
+  }
+  .info-dot:hover,.info-dot:focus{background:#00c9c0;color:#012826;border-color:#00a8a0;outline:none;}
+  .no-tag.info-trigger:hover,.no-tag.info-trigger:focus{box-shadow:0 0 0 3px rgba(0,201,192,.4);outline:none;}
+  .info-chip{
+    display:inline-flex;align-items:center;gap:5px;
+    background:#eef0f4;color:#525866;font-size:11px;font-weight:700;
+    border:1px solid #d7dbe1;border-radius:20px;padding:4px 11px;margin-top:8px;
+  }
+  .info-chip:hover,.info-chip:focus{background:#1b1f28;color:#fff;border-color:#1b1f28;outline:none;}
+  .prd-popover{
+    display:none;position:fixed;z-index:2000;max-width:300px;
+    background:#1b1f28;color:#e7e9ee;border-radius:8px;
+    padding:11px 13px;font-size:11px;line-height:1.65;
+    box-shadow:0 10px 28px rgba(0,0,0,.32);
+  }
+  .prd-popover.show{display:block;}
+  .prd-popover .pop-tag{
+    display:inline-flex;align-items:center;background:#5b6270;color:#fff;
+    font-size:9.5px;font-weight:800;border-radius:3px;padding:2px 6px;
+    letter-spacing:.2px;margin-bottom:6px;
+  }
+  .prd-popover .lead{color:#ff9a9d;font-weight:700;display:block;margin-bottom:5px;}
+  .prd-popover b{color:#ffd479;}
+  .prd-popover ul{margin:4px 0 0;padding-left:15px;}
+  .prd-popover li{margin-bottom:4px;}
+  .prd-popover code{background:rgba(255,255,255,.14);padding:1px 4px;border-radius:3px;}
+</style>
+
+<div class="bs-topbar">
+  <div class="bs-topbar-left"><span class="bs-logo">weverse backstage</span><span>big hit m.sic</span></div>
+  <div class="bs-topbar-right"><span>관리자 화면 ▾</span><span>설정 신청</span><span>yongwookim@weversecompany.com</span></div>
+</div>
+<div class="bs-subbar">
+  <div class="bs-community"><span class="bs-comm-logo">B</span>BTS <span class="chev" style="font-size:10px;color:var(--text-sub);">▾</span></div>
+  <nav class="bs-tabs">
+    <span class="bs-tab active">커뮤니티</span>
+    <span class="bs-tab">인사이트</span>
+    <span class="bs-tab">팬이벤트</span>
+  </nav>
+</div>
+
+<div class="bs-body">
+  <aside class="bs-sidebar">
+    <div class="bs-nav-item">팬 콘텐츠 관리</div>
+    <div class="bs-nav-item">미디스트 콘텐츠 관리</div>
+    <div class="bs-nav-item">미디어 관리 <span class="chev">▾</span></div>
+    <div class="bs-nav-item active-group">리스닝 파티 관리 <span class="chev">▾</span></div>
+    <div class="bs-nav-sub"><div class="bs-nav-subitem active">리스닝 파티 콘텐츠 관리</div></div>
+    <div class="bs-nav-item">커뮤니케이션 <span class="chev">▾</span></div>
+    <div class="bs-nav-item">커뮤니티 관리 <span class="chev">▾</span></div>
+    <div class="bs-nav-item">신고 신계 관리 <span class="chev">▾</span></div>
+    <div class="bs-nav-item">Weverse DM 관리 <span class="chev">▾</span></div>
+    <div class="bs-sidebar-foot">이용 가이드</div>
+  </aside>
+
+  <main class="bs-main">
+    <div class="title-row">
+      <h1 class="page-title">리스닝 파티 예약</h1>
+      <div class="btn">돌아가기</div>
+    </div>
+    <p class="page-sub">목업 참고: PRD &laquo;ADMIN/BS - 공식 파티 아티스트 음성 송출&raquo; v8 · 2-1. 예약 파티 생성(BS) · 02_BS_예약생성화면.jpg 실화면 필드 구성 기준(게시 커뮤니티 필드 없음)</p>
+
+    <div class="legend">
+      <span><span class="swatch sw-yellow"></span>이번 스펙에서 신규 삽입된 항목</span>
+      <span><span class="no-tag" style="display:inline-flex;vertical-align:1px;">No.1</span> PRD Description/Note 표에 정의된 항목 — <b>오렌지 배지에 마우스를 올리거나 클릭하면 PRD 설명이 표시됩니다</b></span>
+    </div>
+
+    <!-- ① 예약 공개 -->
+    <div class="field-row">
+      <div class="field-label-row"><span class="num-badge">①</span><span class="field-label"><span class="req-star">*</span>예약 공개</span></div>
+      <div class="field-body">
+        <div class="seg-control"><span class="seg-btn selected">공개</span><span class="seg-btn">비공개</span></div>
+      </div>
+    </div>
+
+    <!-- ② 썸네일 -->
+    <div class="field-row">
+      <div class="field-label-row"><span class="num-badge">②</span><span class="field-label">썸네일</span></div>
+      <div class="field-body">
+        <div class="thumb-box"></div>
+        <div class="help-text">가로·세로 900px 이상 정사각형 권장, JPG/PNG 형식으로 등록해 주세요. (최대 2MB 권장)</div>
+        <div class="thumb-actions">
+          <div class="btn-mini">이미지 등록</div>
+          <div class="btn-mini">URL 이미지 등록</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ 제목 및 내용 -->
+    <div class="field-row">
+      <div class="field-label-row"><span class="num-badge">③</span><span class="field-label"><span class="req-star">*</span>제목 및 내용</span></div>
+      <div class="field-body">
+        <table class="title-table">
+          <tr>
+            <td class="lang-cell"><input type="radio" checked style="accent-color:var(--cyan-dark);"> 기본 &nbsp;한국어 (ko) ▾</td>
+            <td>
+              <div class="title-input-wrap">
+                <input type="text" placeholder="제목을 입력해 주세요. (최대 50자)">
+                <span class="char-count">0/50</span>
+              </div>
+              <div class="title-input-wrap">
+                <textarea placeholder="내용을 입력해 주세요."></textarea>
+                <span class="char-count" style="top:auto;bottom:8px;">0/100</span>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <div class="add-row-btn">＋</div>
+        <div class="help-text">
+          언어별로 제목 및 내용을 다르게 설정할 수 있습니다.<br>
+          추가한 언어별 제목/내용은 사용자의 커뮤니티 언어 설정에 따라 노출됩니다.<br>
+          기타 언어에 등록이 안 되어 있는 경우 기본 언어로 노출됩니다.<br>
+          내용이 없어도 파티 목록/리스닝 파티 진입 화면 등에서 노출에 영향을 주지 않습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- ④ 플레이리스트 -->
+    <div class="field-row">
+      <div class="field-label-row"><span class="num-badge">④</span><span class="field-label"><span class="req-star">*</span>리스닝 파티 플레이리스트</span></div>
+      <div class="field-body">
+        <div class="add-track-btn">＋ 원핀 추가</div>
+      </div>
+    </div>
+
+    <!-- ⑤ 파티 게시자 -->
+    <div class="field-row">
+      <div class="field-label-row"><span class="num-badge">⑤</span><span class="field-label"><span class="req-star">*</span>파티 게시자</span></div>
+      <div class="field-body">
+        <div class="fake-input">선택해 주세요 <span>▾</span></div>
+      </div>
+    </div>
+
+    <!-- ⑥ [신규] 아티스트 토크 포함 -->
+    <div class="field-row new-item">
+      <div class="field-label-row">
+        <span class="num-badge">⑥</span>
+        <span class="no-tag info-trigger" data-note-id="note-talk-bs" title="PRD 설명 보기">No.1</span>
+        <span class="field-label">아티스트 토크 포함<span class="new-tag">NEW</span></span>
+      </div>
+      <div class="field-body">
+        <div class="toggle-row">
+          <div class="toggle" id="talkToggle" onclick="toggleTalk()"><div class="knob"></div></div>
+          <span class="toggle-state" id="talkState">OFF</span>
+        </div>
+        <div class="help-text">ON 설정 시 파티 내 호스트/아티스트의 실시간 음성 발화(Talk) 기능이 활성화됩니다. OFF 시 기존과 동일하게 순수 음원 재생 파티로 진행됩니다.</div>
+        <div class="talk-notice" id="talkNotice">
+          <span class="lokalise-badge">LOKALISE</span>
+          아티스트 토크 포함 시 파티 최대 지속 가능 시간이 24시간으로 제한됩니다.
+        </div>
+      </div>
+    </div>
+
+    <template id="note-talk-bs">
+      <span class="pop-tag">💬 PRD 설명</span>
+      <span class="lead">개발 반영 대상 아님 — 실제 화면 문구가 아닌 배경 설명입니다.</span>
+      <ul>
+        <li>변경 가능 구간: <b>예약</b> 상태에서만 가능. 대기모드 진입 즉시 잠김(dim) 처리되며, 대기모드~진행중~종료 전까지 잠김 유지됩니다.</li>
+        <li>이어하기(12시간 내 재개설) 시 토글 값은 승계되지 않고 OFF로 초기화됩니다.</li>
+        <li>Admin/BS 정책 100% 동일 — 내용은 1-1과 완전 동일.</li>
+      </ul>
+    </template>
+
+    <!-- ⑦ 파티 시작 시간 -->
+    <div class="field-row">
+      <div class="field-label-row"><span class="num-badge">⑦</span><span class="field-label"><span class="req-star">*</span>파티 시작 시간</span></div>
+      <div class="field-body">
+        <div class="fake-input" style="color:var(--text);">2026.08.06. 19:48 <span>📅</span></div>
+      </div>
+    </div>
+
+    <!-- ⑧ 다시듣기 -->
+    <div class="field-row">
+      <div class="field-label-row"><span class="num-badge">⑧</span><span class="field-label">리스닝 파티 다시듣기</span></div>
+      <div class="field-body">
+        <div class="radio-group">
+          <div>
+            <div class="radio-row"><input type="radio" name="replay" checked><label>다시듣기 지원</label></div>
+            <div class="radio-sub">리스닝 파티 종료 후 다시듣기로 자동 전환됩니다. 커뮤니티 사용자에게 다시듣기가 제공됩니다.</div>
+          </div>
+          <div>
+            <div class="radio-row"><input type="radio" name="replay"><label>지원 안함</label></div>
+            <div class="radio-sub">리스닝 파티 종료 후 다시듣기가 제공되지 않습니다.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑨ 예약 파티 공개 시간 -->
+    <div class="field-row" style="border-bottom:none;">
+      <div class="field-label-row"><span class="num-badge">⑨</span><span class="field-label"><span class="req-star">*</span>예약 파티 공개 시간</span></div>
+      <div class="field-body">
+        <div class="fake-input" style="color:var(--text);">2026.08.05. 19:48 <span>📅</span></div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <div class="btn">취소</div>
+      <div class="btn btn-primary">저장</div>
+    </div>
+  </main>
+</div>
+
+<script>
+  function toggleTalk(){
+    var t=document.getElementById('talkToggle');
+    var s=document.getElementById('talkState');
+    var n=document.getElementById('talkNotice');
+    var isOn=t.classList.toggle('on');
+    s.textContent=isOn?'ON':'OFF';
+    s.classList.toggle('is-on',isOn);
+    n.classList.toggle('show',isOn);
+  }
+</script>
+
+<!-- ===== INFO POPOVER (PRD 설명 레이어) — hover 또는 클릭으로 show/hide ===== -->
+<div id="prdPopover" class="prd-popover" role="tooltip"></div>
+<script>
+(function(){
+  var pop = document.getElementById('prdPopover');
+  if(!pop) return;
+  var pinned=false, hideTimer=null, showTimer=null, current=null;
+
+  function render(trigger){
+    var tplId = trigger.getAttribute('data-note-id');
+    var tpl = tplId && document.getElementById(tplId);
+    if(!tpl) return false;
+    pop.innerHTML = tpl.innerHTML;
+    return true;
+  }
+  function position(trigger){
+    var r = trigger.getBoundingClientRect();
+    pop.style.left='-9999px'; pop.style.top='0px';
+    pop.classList.add('show');
+    var pw = pop.offsetWidth, ph = pop.offsetHeight;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var left = r.left;
+    var top = r.bottom + 10;
+    if(left + pw > vw - 12) left = Math.max(12, vw - pw - 12);
+    if(top + ph > vh - 12){ top = r.top - ph - 10; }
+    pop.style.left = Math.max(12,left) + 'px';
+    pop.style.top = Math.max(12,top) + 'px';
+  }
+  function show(trigger){
+    if(!render(trigger)) return;
+    position(trigger);
+    current = trigger;
+  }
+  function hide(){
+    pop.classList.remove('show');
+    pinned=false; current=null;
+  }
+  document.querySelectorAll('.info-trigger[data-note-id]').forEach(function(trigger){
+    trigger.setAttribute('tabindex','0');
+    trigger.addEventListener('mouseenter', function(){
+      clearTimeout(hideTimer); clearTimeout(showTimer);
+      showTimer = setTimeout(function(){ show(trigger); }, 100);
+    });
+    trigger.addEventListener('mouseleave', function(){
+      clearTimeout(showTimer);
+      if(pinned) return;
+      hideTimer = setTimeout(hide, 220);
+    });
+    trigger.addEventListener('click', function(e){
+      e.stopPropagation();
+      if(current===trigger && pop.classList.contains('show')){
+        pinned = !pinned;
+        if(!pinned) hide();
+      } else {
+        pinned = true;
+        show(trigger);
+      }
+    });
+    trigger.addEventListener('keydown', function(e){
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); trigger.click(); }
+    });
+  });
+  pop.addEventListener('mouseenter', function(){ clearTimeout(hideTimer); });
+  pop.addEventListener('mouseleave', function(){ if(!pinned) hideTimer=setTimeout(hide,220); });
+  document.addEventListener('click', function(e){
+    if(pop.classList.contains('show') && !pop.contains(e.target) && (!current || !current.contains(e.target))){
+      hide();
+    }
+  });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') hide(); });
+  window.addEventListener('resize', function(){ if(current) position(current); });
+  window.addEventListener('scroll', function(){ if(current) position(current); }, true);
+})();
+</script>

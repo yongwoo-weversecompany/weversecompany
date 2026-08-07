@@ -1,0 +1,787 @@
+<title>ADMIN 1-1. 리스닝 파티 예약 (목업)</title>
+<style>
+  :root{
+    --navy: #0b1226;
+    --navy-2: #101a33;
+    --cyan: #00c9c0;
+    --cyan-dark: #00a8a0;
+    --mint-bg: #eafbfa;
+    --mint-border: #b7ece7;
+    --yellow-bg: #fff6cf;
+    --yellow-border: #f0ce3a;
+    --yellow-border-strong: #e0b400;
+    --text: #1b1f28;
+    --text-sub: #6b7280;
+    --text-faint: #9aa1ad;
+    --border: #e5e7eb;
+    --border-strong: #d7dbe1;
+    --red: #e5484d;
+    --note-border: #adb5c2;
+    --note-bg: #f4f5f8;
+    --note-tag: #5b6270;
+    --note-text: #585f6c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",Segoe UI,Roboto,sans-serif;
+    color:var(--text);
+    background:#f4f5f7;
+    font-size:13px;
+    line-height:1.5;
+  }
+  .app{display:flex;min-height:100vh;}
+
+  /* ===== GNB ===== */
+  .gnb{
+    width:212px;
+    flex:0 0 212px;
+    background:var(--navy);
+    color:#c9cdd8;
+    display:flex;
+    flex-direction:column;
+    position:sticky;
+    top:0;
+    height:100vh;
+  }
+  .gnb-logo{
+    display:flex;align-items:center;gap:8px;
+    padding:16px 16px;
+    color:#fff;font-weight:700;font-size:14px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .gnb-logo .mark{
+    width:22px;height:22px;border-radius:5px;background:var(--cyan);
+    color:var(--navy);display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:13px;
+  }
+  .gnb-menu{flex:1;overflow-y:auto;padding:8px 0;}
+  .gnb-item{
+    padding:9px 16px;font-size:12.5px;color:#aab0c0;cursor:default;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .gnb-item .chev{font-size:10px;opacity:.5;}
+  .gnb-item.active-group{color:#fff;font-weight:600;}
+  .gnb-sub{background:rgba(255,255,255,.02);}
+  .gnb-sub .gnb-subitem{
+    padding:8px 16px 8px 30px;font-size:12.5px;color:#9aa1b3;
+  }
+  .gnb-sub .gnb-subitem.active{
+    background:rgba(0,201,192,.14);
+    color:var(--cyan);
+    font-weight:700;
+    border-left:3px solid var(--cyan);
+    padding-left:27px;
+  }
+  .gnb-foot{
+    padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);
+    color:#7a8193;font-size:16px;
+  }
+
+  /* ===== MAIN ===== */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .topbar{
+    height:44px;background:#fff;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 20px;font-size:12px;color:var(--text-sub);
+    flex:0 0 auto;
+  }
+  .topbar .crumb b{color:var(--text);font-weight:600;}
+  .topbar .right{display:flex;gap:14px;align-items:center;color:var(--text-sub);}
+  .topbar .right span{cursor:default;}
+
+  .content-wrap{padding:22px 28px 60px;max-width:1500px;}
+  .page-title{font-size:19px;font-weight:700;margin:0 0 4px;}
+  .page-sub{color:var(--text-sub);font-size:12px;margin:0 0 18px;}
+
+  .legend{
+    display:flex;gap:16px;align-items:center;margin-bottom:16px;
+    font-size:12px;color:var(--text-sub);flex-wrap:wrap;
+  }
+  .legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-2px;}
+  .legend .sw-yellow{background:var(--yellow-border);border:1px solid var(--yellow-border-strong);}
+  .legend .sw-note{background:var(--note-bg);border:1px dashed var(--note-border);}
+  .legend .sw-no{background:linear-gradient(180deg,#ff9a3d,#ff7a00);border:1px solid #e56800;}
+
+  .layout{display:flex;gap:20px;align-items:flex-start;}
+
+  /* ===== FORM CARD ===== */
+  .form-card{
+    flex:1 1 auto;
+    max-width:920px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:26px 28px 30px;
+  }
+
+  .field-row{
+    display:flex;
+    padding:14px 0;
+    border-bottom:1px solid #f1f2f4;
+    gap:18px;
+  }
+  .field-row:first-child{padding-top:2px;}
+  .field-label-col{
+    flex:0 0 190px;
+    display:flex;
+    align-items:flex-start;
+    gap:5px;
+    padding-top:6px;
+  }
+  .field-label{
+    flex:1 1 auto;
+    min-width:0;
+  }
+  .num-badge{
+    flex:0 0 auto;
+    width:18px;height:18px;
+    border-radius:50%;
+    border:1px solid var(--border-strong);
+    color:var(--text-sub);
+    font-size:10.5px;
+    display:flex;align-items:center;justify-content:center;
+    background:#fafafa;
+    font-weight:600;
+    margin-top:1px;
+  }
+  .no-tag{
+    flex:0 0 auto;
+    font-size:10px;
+    font-weight:800;
+    color:#fff;
+    background:linear-gradient(180deg,#ff9a3d,#ff7a00);
+    border:1px solid #e56800;
+    border-radius:3px;
+    padding:2px 6px;
+    margin-top:1px;
+    letter-spacing:.2px;
+    white-space:nowrap;
+    box-shadow:0 1px 2px rgba(255,122,0,.35);
+  }
+  .field-label{font-weight:700;font-size:13px;color:var(--text);}
+  .req-star{color:var(--red);margin-right:2px;}
+  .field-body{flex:1;min-width:0;}
+
+  .help-text{color:var(--text-sub);font-size:11.5px;margin-top:6px;line-height:1.6;}
+
+  /* inputs */
+  input[type=text], .fake-input, select.fake-select{
+    height:32px;border:1px solid var(--border-strong);border-radius:4px;
+    padding:0 10px;font-size:12.5px;color:var(--text);background:#fff;
+    width:260px;
+  }
+  .fake-input{display:flex;align-items:center;color:var(--text-faint);gap:8px;cursor:default;justify-content:space-between;}
+  .fake-input .ic{opacity:.5;}
+  .view-only-val{
+    display:flex;align-items:center;gap:6px;color:var(--text);font-weight:500;font-size:13px;
+  }
+  .view-only-val .chev{color:var(--text-faint);font-size:11px;}
+
+  /* radios */
+  .radio-group{display:flex;flex-direction:column;gap:10px;}
+  .radio-row{display:flex;align-items:flex-start;gap:8px;}
+  .radio-row input[type=radio]{
+    width:16px;height:16px;accent-color:var(--cyan-dark);margin-top:2px;flex:0 0 auto;
+  }
+  .radio-row label{font-size:13px;cursor:pointer;}
+  .radio-inline{display:flex;gap:22px;align-items:center;}
+  .radio-inline .radio-row{align-items:center;}
+  .radio-sub{color:var(--text-sub);font-size:11.5px;margin-top:2px;line-height:1.6;}
+
+  /* thumbnail */
+  .thumb-row{display:flex;gap:14px;align-items:flex-start;}
+  .thumb-box{
+    width:104px;height:104px;border-radius:6px;background:#e9eaee;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:30px;color:var(--cyan);flex:0 0 auto;
+    border:1px solid var(--border);
+  }
+  .thumb-actions{display:flex;gap:8px;height:32px;align-self:flex-start;}
+  .btn-mini{
+    height:32px;padding:0 12px;border:1px solid var(--border-strong);border-radius:4px;
+    background:#fff;font-size:12px;color:var(--text);display:flex;align-items:center;gap:6px;cursor:default;
+  }
+
+  /* title table */
+  table.title-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  table.title-table th{
+    text-align:left;font-weight:600;color:var(--text-sub);font-size:11.5px;
+    padding:6px 10px;border-bottom:1px solid var(--border);
+  }
+  table.title-table td{padding:10px;vertical-align:top;}
+  .lang-cell{width:120px;display:flex;align-items:center;gap:8px;}
+  .title-cell-row{background:var(--mint-bg);border:1px solid var(--mint-border);border-radius:4px;}
+  .title-input-wrap{position:relative;}
+  .title-input-wrap input, .title-input-wrap textarea{
+    width:100%;border:1px solid var(--border-strong);border-radius:4px;font-size:12.5px;
+    padding:8px 44px 8px 10px;font-family:inherit;color:var(--text);
+  }
+  .title-input-wrap textarea{height:56px;resize:none;margin-top:6px;}
+  .char-count{
+    position:absolute;right:10px;top:8px;font-size:10.5px;color:var(--text-faint);
+  }
+  .char-count.bottom{top:auto;bottom:8px;}
+  .del-cell{width:32px;text-align:center;color:var(--text-faint);}
+  .add-row-btn{
+    display:flex;align-items:center;justify-content:center;
+    height:34px;border:1px dashed var(--border-strong);border-radius:4px;
+    color:var(--text-sub);font-size:16px;margin-top:8px;cursor:default;background:#fafbfc;
+  }
+
+  /* playlist table */
+  table.playlist-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:2px;}
+  table.playlist-table th{
+    text-align:left;font-weight:600;color:var(--text-sub);font-size:11.5px;
+    padding:8px 10px;border-bottom:1px solid var(--border);background:#fafbfc;
+  }
+  table.playlist-table td{padding:10px;color:var(--text-faint);}
+
+  /* toggle */
+  .toggle{
+    position:relative;width:40px;height:22px;border-radius:12px;
+    background:#d7dbe1;cursor:pointer;flex:0 0 auto;transition:background .15s;
+  }
+  .toggle .knob{
+    position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+    background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.25);
+  }
+  .toggle.on{background:var(--cyan);}
+  .toggle.on .knob{left:20px;}
+  .toggle.disabled{cursor:not-allowed;opacity:.55;}
+  .toggle-row{display:flex;align-items:center;gap:10px;}
+  .toggle-state{font-size:12.5px;font-weight:700;color:var(--text-sub);}
+  .toggle-state.is-on{color:var(--cyan-dark);}
+
+  /* new-item highlight */
+  .field-row.new-item{
+    background:var(--yellow-bg);
+    border:1px solid var(--yellow-border);
+    border-radius:6px;
+    margin:6px 0;
+    padding:14px 14px;
+  }
+  .new-tag{
+    display:inline-flex;align-items:center;
+    background:var(--yellow-border-strong);color:#3a2c00;
+    font-size:10px;font-weight:800;border-radius:3px;
+    padding:1px 6px;margin-left:8px;letter-spacing:.3px;
+  }
+
+  .lokalise-badge{
+    display:inline-flex;align-items:center;
+    background:var(--red);color:#fff;font-size:9.5px;font-weight:800;
+    border-radius:3px;padding:1px 5px;margin-right:6px;letter-spacing:.2px;
+  }
+  .talk-notice{
+    display:none;
+    margin-top:10px;
+    background:#fff;
+    border:1px solid #f3c2c4;
+    border-radius:4px;
+    padding:8px 10px;
+    font-size:11.5px;
+    color:#8a1a1e;
+    align-items:center;
+    gap:0;
+  }
+  .talk-notice.show{display:flex;}
+
+  /* ===== PRD 설명(코멘트) 박스 — 실제 화면 요소와 명확히 구분 ===== */
+  .prd-note{
+    margin-top:10px;
+    border:1px dashed var(--note-border);
+    background:var(--note-bg);
+    border-radius:5px;
+    padding:9px 11px;
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+  }
+  .prd-note .note-tag{
+    flex:0 0 auto;
+    background:var(--note-tag);
+    color:#fff;
+    font-size:9.5px;
+    font-weight:800;
+    border-radius:3px;
+    padding:2px 6px;
+    white-space:nowrap;
+    letter-spacing:.2px;
+    margin-top:1px;
+  }
+  .prd-note .note-body{
+    font-size:11px;
+    color:var(--note-text);
+    line-height:1.65;
+  }
+  .prd-note .note-body b{color:#3d4250;}
+  .prd-note .note-body ul{margin:4px 0 0;padding-left:15px;}
+  .prd-note .note-body li{margin-bottom:3px;}
+  .prd-note .note-body>.lead{color:#8a1a1e;font-weight:700;}
+
+  /* buttons */
+  .form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:24px;}
+  .btn{
+    height:34px;padding:0 20px;border-radius:4px;font-size:13px;font-weight:600;
+    border:1px solid var(--border-strong);background:#fff;color:var(--text);cursor:default;
+  }
+  .btn-primary{background:var(--cyan);border-color:var(--cyan-dark);color:#012826;}
+
+  /* preview panel */
+  .preview-panel{
+    flex:0 0 320px;
+    position:sticky;
+    top:22px;
+  }
+  .preview-panel .ph-title{
+    font-size:13px;font-weight:700;margin-bottom:2px;display:flex;align-items:center;gap:6px;
+  }
+  .preview-panel .ph-sub{font-size:11px;color:var(--text-sub);margin-bottom:12px;}
+  .preview-card{
+    background:#fff;border:1px solid var(--border);border-radius:6px;
+    padding:18px 18px 20px;
+  }
+  .preview-card .mode-badge{
+    display:inline-flex;align-items:center;gap:5px;
+    background:#eef0f4;color:var(--text-sub);font-size:11px;font-weight:700;
+    border-radius:4px;padding:3px 8px;margin-bottom:14px;
+  }
+  .dim-field{
+    background:#fafafa;border:1px solid var(--border);border-radius:6px;padding:14px;
+    position:relative;
+  }
+  .dim-field .field-label-col{padding-top:0;}
+  .dim-field .toggle-row{opacity:.6;}
+  .dim-caption{
+    margin-top:10px;font-size:11px;color:var(--text-sub);display:flex;gap:6px;align-items:flex-start;
+  }
+  .dim-tooltip-wrap{position:relative;display:inline-block;}
+  .dim-tooltip{
+    position:absolute;bottom:calc(100% + 8px);left:0;
+    background:#1b1f28;color:#fff;font-size:11px;line-height:1.5;
+    padding:8px 10px;border-radius:5px;width:220px;
+    opacity:0;pointer-events:none;transition:opacity .12s;
+    z-index:5;
+  }
+  .dim-tooltip:after{
+    content:"";position:absolute;top:100%;left:14px;
+    border:5px solid transparent;border-top-color:#1b1f28;
+  }
+  .dim-tooltip-wrap:hover .dim-tooltip{opacity:1;}
+  .dim-flash{animation:flash .5s;}
+  @keyframes flash{
+    0%,100%{box-shadow:none;}
+    30%{box-shadow:0 0 0 3px rgba(229,72,77,.35);}
+  }
+
+  /* ===== INFO POPOVER SYSTEM (2026-08 개편: 설명은 hover/click 시에만 노출, 실제 화면 개입 최소화) ===== */
+  .info-trigger{cursor:pointer;user-select:none;}
+  .info-dot{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:16px;height:16px;border-radius:50%;flex:0 0 auto;
+    background:#eef0f4;color:#6b7280;font-size:10px;font-weight:800;
+    border:1px solid #d7dbe1;
+  }
+  .info-dot:hover,.info-dot:focus{background:#00c9c0;color:#012826;border-color:#00a8a0;outline:none;}
+  .no-tag.info-trigger:hover,.no-tag.info-trigger:focus{box-shadow:0 0 0 3px rgba(0,201,192,.4);outline:none;}
+  .info-chip{
+    display:inline-flex;align-items:center;gap:5px;
+    background:#eef0f4;color:#525866;font-size:11px;font-weight:700;
+    border:1px solid #d7dbe1;border-radius:20px;padding:4px 11px;margin-top:8px;
+  }
+  .info-chip:hover,.info-chip:focus{background:#1b1f28;color:#fff;border-color:#1b1f28;outline:none;}
+  .prd-popover{
+    display:none;position:fixed;z-index:2000;max-width:300px;
+    background:#1b1f28;color:#e7e9ee;border-radius:8px;
+    padding:11px 13px;font-size:11px;line-height:1.65;
+    box-shadow:0 10px 28px rgba(0,0,0,.32);
+  }
+  .prd-popover.show{display:block;}
+  .prd-popover .pop-tag{
+    display:inline-flex;align-items:center;background:#5b6270;color:#fff;
+    font-size:9.5px;font-weight:800;border-radius:3px;padding:2px 6px;
+    letter-spacing:.2px;margin-bottom:6px;
+  }
+  .prd-popover .lead{color:#ff9a9d;font-weight:700;display:block;margin-bottom:5px;}
+  .prd-popover b{color:#ffd479;}
+  .prd-popover ul{margin:4px 0 0;padding-left:15px;}
+  .prd-popover li{margin-bottom:4px;}
+  .prd-popover code{background:rgba(255,255,255,.14);padding:1px 4px;border-radius:3px;}
+</style>
+
+<div class="app">
+  <aside class="gnb">
+    <div class="gnb-logo"><span class="mark">W</span> Weverse Admin</div>
+    <nav class="gnb-menu">
+      <div class="gnb-item">회원 정보 <span class="chev">▾</span></div>
+      <div class="gnb-item">커뮤니티 <span class="chev">▾</span></div>
+      <div class="gnb-item">콘텐츠 관리 <span class="chev">▾</span></div>
+      <div class="gnb-item">신고 관리 <span class="chev">▾</span></div>
+      <div class="gnb-item">LIVE <span class="chev">▾</span></div>
+      <div class="gnb-item active-group">리스닝 파티 <span class="chev">▾</span></div>
+      <div class="gnb-sub">
+        <div class="gnb-subitem active">리스닝 파티 관리</div>
+      </div>
+      <div class="gnb-item">미디어 <span class="chev">▾</span></div>
+      <div class="gnb-item">서비스 홈 <span class="chev">▾</span></div>
+      <div class="gnb-item">서비스 관리 <span class="chev">▾</span></div>
+      <div class="gnb-item">Cleanbot 관리 <span class="chev">▾</span></div>
+      <div class="gnb-item">Weverse DM 관리 <span class="chev">▾</span></div>
+      <div class="gnb-item">디지털엠버시 관리 <span class="chev">▾</span></div>
+      <div class="gnb-item">특전 관리 <span class="chev">▾</span></div>
+      <div class="gnb-item">콘텐츠 리소스 관리 <span class="chev">▾</span></div>
+      <div class="gnb-item">AI 검색 관리 <span class="chev">▾</span></div>
+      <div class="gnb-item">서비스 모니터링 <span class="chev">▾</span></div>
+      <div class="gnb-item">SEO 관리 <span class="chev">▾</span></div>
+      <div class="gnb-item">권한 관리 <span class="chev">▾</span></div>
+      <div class="gnb-item">AB Test</div>
+      <div class="gnb-item">신규기능/체험단 <span class="chev">▾</span></div>
+      <div class="gnb-item">VLIVE</div>
+    </nav>
+    <div class="gnb-foot">☰</div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="crumb">리스닝 파티 / <b>리스닝 파티 관리</b></div>
+      <div class="right">
+        <span>김용우B/Yongwoo Kim(WEV_미디어기획파트) ▾</span>
+        <span>한국어 ▾</span>
+        <span>UTC +09:00</span>
+      </div>
+    </div>
+
+    <div class="content-wrap">
+      <h1 class="page-title">리스닝 파티 예약</h1>
+      <p class="page-sub">목업 참고: PRD &laquo;ADMIN/BS - 공식 파티 아티스트 음성 송출&raquo; v8 · 1-1. 예약 파티 생성 화면 · 원문자 배지(①~⑩)는 화면 내 필드 순서 참고용, 오렌지 No. 배지는 PRD Description/Note 표에 실제로 정의된 항목에만 표기</p>
+
+      <div class="legend">
+        <span><span class="swatch sw-yellow"></span>이번 스펙에서 신규 삽입된 항목</span>
+        <span><span class="num-badge" style="display:inline-flex;vertical-align:-4px;">①</span> 화면 내 필드 순서(참고용, 전체 10개)</span>
+        <span><span class="no-tag" style="display:inline-flex;vertical-align:1px;">No.1</span> PRD Description/Note 표에 정의된 항목 — <b>오렌지 배지에 마우스를 올리거나 클릭하면 PRD 설명이 표시됩니다</b></span>
+      </div>
+
+      <div class="layout">
+        <!-- ===== FORM CARD ===== -->
+        <div class="form-card">
+
+          <!-- ① 게시 커뮤니티 -->
+          <div class="field-row">
+            <div class="field-label-col">
+              <span class="num-badge">①</span>
+              <span class="field-label">게시 커뮤니티</span>
+            </div>
+            <div class="field-body">
+              <div class="view-only-val">BTS <span class="chev">⌄</span></div>
+            </div>
+          </div>
+
+          <!-- ② 노출 상태 -->
+          <div class="field-row">
+            <div class="field-label-col">
+              <span class="num-badge">②</span>
+              <span class="field-label"><span class="req-star">*</span>노출 상태</span>
+            </div>
+            <div class="field-body">
+              <div class="radio-inline">
+                <div class="radio-row"><input type="radio" name="visibility" id="vis1" checked><label for="vis1">전체 공개</label></div>
+                <div class="radio-row"><input type="radio" name="visibility" id="vis2"><label for="vis2">전체 비공개</label></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ③ 리스닝 파티 게시자 -->
+          <div class="field-row">
+            <div class="field-label-col">
+              <span class="num-badge">③</span>
+              <span class="field-label"><span class="req-star">*</span>리스닝 파티 게시자</span>
+            </div>
+            <div class="field-body">
+              <div class="fake-input" style="width:280px;">선택해 주세요 <span class="ic">▾</span></div>
+            </div>
+          </div>
+
+          <!-- ④ 리스닝 파티 시작 일시 -->
+          <div class="field-row">
+            <div class="field-label-col">
+              <span class="num-badge">④</span>
+              <span class="field-label"><span class="req-star">*</span>리스닝 파티 시작 일시</span>
+            </div>
+            <div class="field-body">
+              <div class="fake-input" style="width:280px;">선택해 주세요 <span class="ic">📅</span></div>
+            </div>
+          </div>
+
+          <!-- ⑤ [신규] 아티스트 토크 포함 -->
+          <div class="field-row new-item">
+            <div class="field-label-col">
+              <span class="num-badge">⑤</span>
+              <span class="no-tag info-trigger" data-note-id="note-talk-admin" title="PRD 설명 보기">No.1</span>
+              <span class="field-label">아티스트 토크 포함<span class="new-tag">NEW</span></span>
+            </div>
+            <div class="field-body">
+              <!-- 실제 화면 요소 (토글 + ON시 안내문구) -->
+              <div class="toggle-row">
+                <div class="toggle" id="talkToggle" onclick="toggleTalk()">
+                  <div class="knob"></div>
+                </div>
+                <span class="toggle-state" id="talkState">OFF</span>
+              </div>
+
+              <div class="talk-notice" id="talkNotice">
+                <span class="lokalise-badge">LOKALISE</span>
+                아티스트 토크 포함 시 파티 최대 지속 가능 시간이 24시간으로 제한됩니다.
+              </div>
+            </div>
+          </div>
+
+          <template id="note-talk-admin">
+            <span class="pop-tag">💬 PRD 설명</span>
+            <span class="lead">개발 반영 대상 아님 — 실제 화면에는 표시되지 않는 기획 배경 설명입니다.</span>
+            <ul>
+              <li>ON 설정 시 파티 내 호스트/아티스트의 실시간 음성 발화(Talk) 기능이 활성화됩니다. OFF 시 기존과 동일하게 순수 음원 재생 파티로 진행됩니다.</li>
+              <li>변경 가능 구간: <b>예약</b> 상태에서만 가능. 대기모드 진입 즉시 잠김(dim) 처리되며, 대기모드~진행중~종료 전까지 잠김 유지됩니다. (우측 &laquo;대기모드 진입 후&raquo; 미리보기 참고)</li>
+              <li>이어하기(12시간 내 재개설) 시 토글 값은 승계되지 않고 OFF로 초기화됩니다.</li>
+            </ul>
+          </template>
+
+          <!-- ⑥ 리스닝 파티 노출 일시 -->
+          <div class="field-row">
+            <div class="field-label-col">
+              <span class="num-badge">⑥</span>
+              <span class="field-label"><span class="req-star">*</span>리스닝 파티 노출 일시</span>
+            </div>
+            <div class="field-body">
+              <div class="fake-input" style="width:280px;">선택해 주세요 <span class="ic">📅</span></div>
+              <div class="help-text">노출 일시를 리스닝 파티 시작시간보다 이전으로 설정하면 예약 상태 파티가 파티 탭에 노출됩니다. 파티 탭에 노출된 사용자들이 시작 예정인 리스닝 파티 정보를 확인 가능하지만, 미리 좋아요나 배웅을 남길 수 없습니다.</div>
+            </div>
+          </div>
+
+          <!-- ⑦ 썸네일 -->
+          <div class="field-row">
+            <div class="field-label-col">
+              <span class="num-badge">⑦</span>
+              <span class="field-label"><span class="req-star">*</span>썸네일</span>
+            </div>
+            <div class="field-body">
+              <div class="thumb-row">
+                <div class="thumb-box">W</div>
+                <div class="thumb-actions">
+                  <div class="btn-mini">📎 파일 업로드</div>
+                  <div class="btn-mini">🔗 URL 입로드</div>
+                </div>
+              </div>
+              <div class="help-text">가로·세로 900px 이상 정사각형 권장, JPG/PNG 형식으로 등록해 주세요. (최대 2MB 권장)</div>
+            </div>
+          </div>
+
+          <!-- ⑧ 제목 및 내용 -->
+          <div class="field-row">
+            <div class="field-label-col">
+              <span class="num-badge">⑧</span>
+              <span class="field-label"><span class="req-star">*</span>제목 및 내용</span>
+            </div>
+            <div class="field-body">
+              <table class="title-table">
+                <tr><th style="width:120px;">언어</th><th>제목 및 내용</th><th style="width:32px;"></th></tr>
+                <tr class="title-cell-row">
+                  <td class="lang-cell"><input type="radio" checked style="accent-color:var(--cyan-dark);"> 한국어 ▾</td>
+                  <td>
+                    <div class="title-input-wrap">
+                      <input type="text" placeholder="제목을 입력하세요...">
+                      <span class="char-count">0/50</span>
+                    </div>
+                    <div class="title-input-wrap">
+                      <textarea placeholder="내용을 입력하세요..."></textarea>
+                      <span class="char-count bottom">0/100</span>
+                    </div>
+                  </td>
+                  <td class="del-cell">🗑</td>
+                </tr>
+              </table>
+              <div class="add-row-btn">＋</div>
+            </div>
+          </div>
+
+          <!-- ⑨ 리스닝 파티 플레이리스트 -->
+          <div class="field-row">
+            <div class="field-label-col">
+              <span class="num-badge">⑨</span>
+              <span class="field-label"><span class="req-star">*</span>리스닝 파티 플레이리스트</span>
+            </div>
+            <div class="field-body">
+              <table class="playlist-table">
+                <tr><th style="width:70px;">Track No.</th><th style="width:110px;">DSP</th><th style="width:140px;">아티스트명</th><th>제목</th></tr>
+              </table>
+              <div class="add-row-btn">＋</div>
+            </div>
+          </div>
+
+          <!-- ⑩ 리스닝 파티 다시듣기 -->
+          <div class="field-row" style="border-bottom:none;">
+            <div class="field-label-col">
+              <span class="num-badge">⑩</span>
+              <span class="field-label">리스닝 파티 다시듣기</span>
+            </div>
+            <div class="field-body">
+              <div class="radio-group">
+                <div>
+                  <div class="radio-row"><input type="radio" name="replay" id="rep1" checked><label for="rep1">다시듣기 지원</label></div>
+                  <div class="radio-sub">리스닝 파티 종료 후 다시듣기로 자동 전환됩니다. 커뮤니티 사용자에게 다시듣기가 제공됩니다.</div>
+                </div>
+                <div>
+                  <div class="radio-row"><input type="radio" name="replay" id="rep2"><label for="rep2">지원 안함</label></div>
+                  <div class="radio-sub">리스닝 파티 종료 후 다시듣기가 제공되지 않습니다.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <div class="btn btn-primary">저장</div>
+            <div class="btn">취소</div>
+          </div>
+        </div>
+
+        <!-- ===== PREVIEW PANEL (참고용, 실제 화면 아님 — 인터랙티브 데모) ===== -->
+        <aside class="preview-panel">
+          <div class="ph-title">🔒 &laquo;대기모드 진입 후&raquo; 미리보기</div>
+          <div class="ph-sub">토글을 클릭하거나 마우스를 올려 잠금(dim) 동작을 확인해보세요.</div>
+          <div class="preview-card">
+            <span class="mode-badge">STANDBY · 대기모드</span>
+
+            <div class="dim-field">
+              <div class="field-label-col">
+                <span class="num-badge">⑤</span>
+                <span class="no-tag">No.1</span>
+                <span class="field-label">아티스트 토크 포함</span>
+              </div>
+              <div class="field-body" style="margin-top:10px;">
+                <div class="dim-tooltip-wrap">
+                  <div class="toggle-row">
+                    <div class="toggle on disabled" id="dimToggle" onclick="flashDim()">
+                      <div class="knob"></div>
+                    </div>
+                    <span class="toggle-state is-on">ON</span>
+                  </div>
+                  <div class="dim-tooltip">파티 대기/시작 모드에서는 변경할 수 없습니다.</div>
+                </div>
+                <div class="talk-notice show" style="margin-top:10px;">
+                  <span class="lokalise-badge">LOKALISE</span>
+                  아티스트 토크 포함 시 파티 최대 지속 가능 시간이 24시간으로 제한됩니다.
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="info-trigger info-chip" data-note-id="note-dim-lock-admin">💬 잠금(dim) 정책 설명 보기</button>
+          </div>
+        </aside>
+
+        <template id="note-dim-lock-admin">
+          <span class="pop-tag">💬 PRD 설명 — dim(잠금) 상태 정책 요약</span>
+          <ul>
+            <li>호스트가 [시작하기] 확인 → 대기모드 진입 즉시 잠김</li>
+            <li>대기모드~진행중~종료 전까지 전 구간 잠김 유지</li>
+            <li>[취소]로 대기모드 이탈 시 &rarr; &laquo;예약&raquo; 상태로 복귀, 토글 재편집 가능</li>
+            <li>파티 게시자와 무관하게 LIVE 매니저 권한 계정 / 위버스 내부 Admin 동일 수정 권한</li>
+          </ul>
+        </template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleTalk(){
+    var t = document.getElementById('talkToggle');
+    var state = document.getElementById('talkState');
+    var notice = document.getElementById('talkNotice');
+    var isOn = t.classList.toggle('on');
+    state.textContent = isOn ? 'ON' : 'OFF';
+    state.classList.toggle('is-on', isOn);
+    notice.classList.toggle('show', isOn);
+  }
+  function flashDim(){
+    var el = document.getElementById('dimToggle');
+    el.classList.remove('dim-flash');
+    // restart animation
+    void el.offsetWidth;
+    el.classList.add('dim-flash');
+  }
+</script>
+
+<!-- ===== INFO POPOVER (PRD 설명 레이어) — hover 또는 클릭으로 show/hide ===== -->
+<div id="prdPopover" class="prd-popover" role="tooltip"></div>
+<script>
+(function(){
+  var pop = document.getElementById('prdPopover');
+  if(!pop) return;
+  var pinned=false, hideTimer=null, showTimer=null, current=null;
+
+  function render(trigger){
+    var tplId = trigger.getAttribute('data-note-id');
+    var tpl = tplId && document.getElementById(tplId);
+    if(!tpl) return false;
+    pop.innerHTML = tpl.innerHTML;
+    return true;
+  }
+  function position(trigger){
+    var r = trigger.getBoundingClientRect();
+    pop.style.left='-9999px'; pop.style.top='0px';
+    pop.classList.add('show');
+    var pw = pop.offsetWidth, ph = pop.offsetHeight;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var left = r.left;
+    var top = r.bottom + 10;
+    if(left + pw > vw - 12) left = Math.max(12, vw - pw - 12);
+    if(top + ph > vh - 12){ top = r.top - ph - 10; }
+    pop.style.left = Math.max(12,left) + 'px';
+    pop.style.top = Math.max(12,top) + 'px';
+  }
+  function show(trigger){
+    if(!render(trigger)) return;
+    position(trigger);
+    current = trigger;
+  }
+  function hide(){
+    pop.classList.remove('show');
+    pinned=false; current=null;
+  }
+  document.querySelectorAll('.info-trigger[data-note-id]').forEach(function(trigger){
+    trigger.setAttribute('tabindex','0');
+    trigger.addEventListener('mouseenter', function(){
+      clearTimeout(hideTimer); clearTimeout(showTimer);
+      showTimer = setTimeout(function(){ show(trigger); }, 100);
+    });
+    trigger.addEventListener('mouseleave', function(){
+      clearTimeout(showTimer);
+      if(pinned) return;
+      hideTimer = setTimeout(hide, 220);
+    });
+    trigger.addEventListener('click', function(e){
+      e.stopPropagation();
+      if(current===trigger && pop.classList.contains('show')){
+        pinned = !pinned;
+        if(!pinned) hide();
+      } else {
+        pinned = true;
+        show(trigger);
+      }
+    });
+    trigger.addEventListener('keydown', function(e){
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); trigger.click(); }
+    });
+  });
+  pop.addEventListener('mouseenter', function(){ clearTimeout(hideTimer); });
+  pop.addEventListener('mouseleave', function(){ if(!pinned) hideTimer=setTimeout(hide,220); });
+  document.addEventListener('click', function(e){
+    if(pop.classList.contains('show') && !pop.contains(e.target) && (!current || !current.contains(e.target))){
+      hide();
+    }
+  });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') hide(); });
+  window.addEventListener('resize', function(){ if(current) position(current); });
+  window.addEventListener('scroll', function(){ if(current) position(current); }, true);
+})();
+</script>
