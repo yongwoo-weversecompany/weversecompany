@@ -108,7 +108,7 @@
 
   /* ===== PLAYLIST TABLE (확장) ===== */
   .table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:6px;}
-  table.playlist-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1180px;}
+  table.playlist-table{width:100%;border-collapse:collapse;font-size:12px;min-width:980px;}
   table.playlist-table th{
     text-align:left;font-weight:600;color:var(--text-sub);font-size:11px;
     padding:9px 10px;border-bottom:1px solid var(--border);background:#fafbfc;white-space:nowrap;
@@ -122,13 +122,12 @@
   .dash{color:var(--text-faint);}
   .na{color:var(--text-faint);font-size:11px;}
 
-  /* 발화 세그먼트 행 */
+  /* 발화 세그먼트 행 — 배경색은 설명 편의를 위한 예시 스타일(실제 구현 시 필수 아님, 팝오버 참고) */
   tr.segment-row td{background:var(--segment-bg);border-bottom:1px solid var(--segment-border);}
   tr.segment-row td:first-child{border-left:3px solid #8b6fd1;}
-  .segment-tag{
-    display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;
-    color:#5b3fa0;background:#e7e0fb;border-radius:3px;padding:2px 6px;
-  }
+  .segment-title{font-weight:700;color:#5b3fa0;}
+  .segment-sub{font-size:10.5px;color:var(--text-sub);margin-top:2px;}
+  .override-note{font-size:9.5px;color:var(--text-faint);margin-top:3px;line-height:1.4;}
 
   /* mini toggle for Replay column */
   .mini-toggle{position:relative;width:32px;height:18px;border-radius:10px;background:#d7dbe1;display:inline-block;vertical-align:middle;}
@@ -144,6 +143,21 @@
     display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:4px;
     border:1px solid var(--border-strong);background:#fff;font-size:11px;color:var(--text);
   }
+
+  /* ===== 리플레이 생성중 배너 + 목업 전용 상태 데모 스위치 (2026-08-07 추가) ===== */
+  .state-demo{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding:8px 10px;background:#eef0f4;border-radius:6px;}
+  .state-demo .demo-label{font-size:11px;color:var(--text-sub);font-weight:800;}
+  .state-demo-btn{height:26px;padding:0 12px;border-radius:4px;font-size:11.5px;font-weight:700;border:1px solid var(--border-strong);background:#fff;color:var(--text-sub);cursor:pointer;}
+  .state-demo-btn.active{background:#1b1f28;color:#fff;border-color:#1b1f28;}
+  .replay-gen-banner{
+    display:flex;align-items:center;gap:10px;
+    background:#fff6e5;border:1px solid #f0c34a;color:#7a4a00;
+    border-radius:6px;padding:11px 14px;margin-bottom:14px;font-size:12.5px;font-weight:700;
+  }
+  .replay-gen-banner.hidden{display:none;}
+  .replay-gen-banner .spinner{width:14px;height:14px;border-radius:50%;border:2px solid #f0c34a;border-top-color:#7a4a00;animation:wlpspin .8s linear infinite;flex:0 0 auto;}
+  @keyframes wlpspin{to{transform:rotate(360deg);}}
+  body.demo-generating .lockable{opacity:.4;pointer-events:none;filter:grayscale(55%);}
 
   .radio-group{display:flex;flex-direction:column;gap:10px;}
   .radio-row{display:flex;align-items:flex-start;gap:8px;}
@@ -240,14 +254,24 @@
     <div class="content-wrap">
       <div class="title-row">
         <h1 class="page-title">리스닝파티 상세 정보</h1>
-        <span class="status-pill done"><span class="dot"></span>DONE · 종료됨</span>
       </div>
-      <p class="page-sub">목업 참고: PRD &laquo;ADMIN/BS - 공식 파티 아티스트 음성 송출&raquo; v8 · 1-3. 종료된 파티 상세 화면 · 기존 화면(02_종료파티상세_플레이리스트.jpg) 그대로 + 플레이리스트 테이블 컬럼 5개 확장(③~⑦)</p>
+      <p class="page-sub">목업 참고: PRD &laquo;ADMIN/BS - 공식 파티 아티스트 음성 송출&raquo; v13 · 1-3. 종료된 파티 상세 화면 · 기존 화면(02_종료파티상세_플레이리스트.jpg) 그대로 + 플레이리스트 테이블 컬럼 3개 확장(③~⑤) + 리플레이 생성중 잠금 정책(No.4) 추가</p>
 
       <div class="legend">
-        <span><span class="swatch sw-yellow"></span>신규 삽입 컬럼 (③~⑦)</span>
-        <span><span class="no-tag" style="display:inline-flex;vertical-align:1px;">No.1~3</span> PRD Description/Note 표 항목 번호 — <b>오렌지 배지에 마우스를 올리거나 클릭하면 PRD 설명이 표시됩니다</b></span>
-        <span><span class="swatch sw-segment"></span>발화 세그먼트 행 (음원 트랙 사이 자동 삽입)</span>
+        <span><span class="swatch sw-yellow"></span><b>신규 삽입 컬럼 (③~⑤)</b> — 구조·데이터는 반드시 이대로 구현</span>
+        <span><span class="no-tag" style="display:inline-flex;vertical-align:1px;">No.1~4</span> PRD Description/Note 표 항목 번호 — <b>오렌지 배지에 마우스를 올리거나 클릭하면 PRD 설명이 표시됩니다</b></span>
+        <span><span class="swatch sw-segment"></span>발화 세그먼트 행 예시 표기 — <b>배경색 등 스타일은 참고용(실제 디자인은 자유)</b></span>
+      </div>
+
+      <div class="state-demo">
+        <span class="demo-label">🧪 목업 전용 데모 — 아래 두 버튼으로 실제 화면 상태를 비교해보세요</span>
+        <button type="button" class="state-demo-btn active" id="btnStateReady">① 생성 완료 (기본 표시)</button>
+        <button type="button" class="state-demo-btn" id="btnStateGenerating">② 리플레이 생성중 (파티 종료 직후 1~2분)</button>
+        <span class="no-tag info-trigger" data-note-id="note-genlock-admin" title="PRD 설명 보기">No.4</span>
+      </div>
+      <div class="replay-gen-banner hidden" id="genBanner">
+        <span class="spinner"></span>
+        <span>현재 다시듣기 생성중입니다. 잠시만 기다려 주세요.</span>
       </div>
 
       <div class="form-card">
@@ -285,7 +309,10 @@
         </div>
         <div class="field-row">
           <div class="field-label-col"><span class="field-label plain-label">리스닝 파티 노출 일시</span></div>
-          <div class="field-body"><span class="view-value">2026-07-21 17:47</span></div>
+          <div class="field-body">
+            <span class="view-value">2026-07-21 17:47</span>
+            <div class="help-text" style="color:var(--text-sub);font-size:11.5px;margin-top:6px;line-height:1.6;">노출 일시를 리스닝 파티 시작시간보다 이전으로 설정하면 예약 상태 파티가 파티 탭에 노출됩니다. 파티 탭에 노출된 사용자들이 시작 예정인 리스닝 파티 정보를 확인 가능하지만, 미리 좋아요나 채팅을 남길 수 없습니다.</div>
+          </div>
         </div>
         <div class="field-row">
           <div class="field-label-col"><span class="field-label plain-label">리스닝 파티 게시자</span></div>
@@ -323,9 +350,9 @@
               <table class="playlist-table">
                 <tr>
                   <th colspan="5" style="border-bottom:none;"></th>
-                  <th colspan="3" class="th-group"><span class="no-tag info-trigger" data-note-id="note-seg-cols-admin" title="PRD 설명 보기">No.1</span>발화 세그먼트 컬럼 확장 (③④⑤)</th>
-                  <th class="th-group"><span class="no-tag info-trigger" data-note-id="note-replay-admin" title="PRD 설명 보기">No.2</span>Replay On/Off (⑥)</th>
-                  <th class="th-group"><span class="no-tag info-trigger" data-note-id="note-download-admin" title="PRD 설명 보기">No.3</span>음성 파일 다운로드 (⑦)</th>
+                  <th class="th-group"><span class="no-tag info-trigger" data-note-id="note-seg-cols-admin" title="PRD 설명 보기">No.1</span>발화 세그먼트 표기 (제목 컬럼 표기방식 + ③)</th>
+                  <th class="th-group"><span class="no-tag info-trigger" data-note-id="note-replay-admin" title="PRD 설명 보기">No.2</span>Replay On/Off (④)</th>
+                  <th class="th-group"><span class="no-tag info-trigger" data-note-id="note-download-admin" title="PRD 설명 보기">No.3</span>음성 파일 다운로드 (⑤)</th>
                 </tr>
                 <tr>
                   <th><span class="num-badge">①</span>Track No.</th>
@@ -333,11 +360,9 @@
                   <th>아티스트명</th>
                   <th>제목</th>
                   <th><span class="num-badge">②</span>DSP 매핑 아이콘</th>
-                  <th class="th-new"><span class="num-badge">③</span>발화 아티스트</th>
-                  <th class="th-new"><span class="num-badge">④</span>발화 시작~종료 시각</th>
-                  <th class="th-new"><span class="num-badge">⑤</span>발화 길이</th>
-                  <th class="th-new"><span class="num-badge">⑥</span>Replay On/Off</th>
-                  <th class="th-new"><span class="num-badge">⑦</span>음성 파일 다운로드</th>
+                  <th class="th-new"><span class="num-badge">③</span>발화 시작~종료 시각</th>
+                  <th class="th-new"><span class="num-badge">④</span>Replay On/Off</th>
+                  <th class="th-new"><span class="num-badge">⑤</span>음성 파일 다운로드</th>
                 </tr>
 
                 <tr>
@@ -347,25 +372,24 @@
                   <td>Dynamite</td>
                   <td><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟩</span></span></td>
                   <td class="new-col"><span class="dash">-</span></td>
-                  <td class="new-col"><span class="dash">-</span></td>
-                  <td class="new-col"><span class="dash">-</span></td>
                   <td class="new-col"><span class="na">N/A</span></td>
                   <td class="new-col"><span class="na">N/A</span></td>
                 </tr>
 
                 <tr class="segment-row">
-                  <td><span class="segment-tag">🎙 세그먼트 1</span></td>
                   <td><span class="dash">-</span></td>
                   <td><span class="dash">-</span></td>
                   <td><span class="dash">-</span></td>
-                  <td><span class="dash">-</span></td>
-                  <td class="new-col">지민, RM</td>
-                  <td class="new-col">17:52:03~17:52:41</td>
-                  <td class="new-col">00:38</td>
-                  <td class="new-col">
-                    <div class="replay-cell"><span class="mini-toggle on"><span class="knob"></span></span><span class="replay-state">On</span></div>
+                  <td>
+                    <span class="segment-title">🎙 아티스트 토크 01</span>
+                    <div class="segment-sub">지민, RM · 00:38</div>
                   </td>
-                  <td class="new-col"><div class="dl-btn">⬇ 다운로드</div></td>
+                  <td><span class="dash">-</span></td>
+                  <td class="new-col">17:52:03~17:52:41</td>
+                  <td class="new-col">
+                    <div class="replay-cell lockable"><span class="mini-toggle on"><span class="knob"></span></span><span class="replay-state">On</span></div>
+                  </td>
+                  <td class="new-col"><div class="dl-btn lockable">⬇ 다운로드</div></td>
                 </tr>
 
                 <tr>
@@ -375,25 +399,25 @@
                   <td>Butter</td>
                   <td><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟩</span></span></td>
                   <td class="new-col"><span class="dash">-</span></td>
-                  <td class="new-col"><span class="dash">-</span></td>
-                  <td class="new-col"><span class="dash">-</span></td>
                   <td class="new-col"><span class="na">N/A</span></td>
                   <td class="new-col"><span class="na">N/A</span></td>
                 </tr>
 
                 <tr class="segment-row">
-                  <td><span class="segment-tag">🎙 세그먼트 2</span></td>
                   <td><span class="dash">-</span></td>
                   <td><span class="dash">-</span></td>
                   <td><span class="dash">-</span></td>
-                  <td><span class="dash">-</span></td>
-                  <td class="new-col">지민</td>
-                  <td class="new-col">18:10:15~18:11:02</td>
-                  <td class="new-col">00:47</td>
-                  <td class="new-col">
-                    <div class="replay-cell"><span class="mini-toggle locked"><span class="knob"></span></span><span class="replay-state">Off</span><span class="lock-ic" title="Off→On 재변경 불가(단방향)">🔒</span></div>
+                  <td>
+                    <span class="segment-title">🎙 아티스트 토크 02</span>
+                    <div class="segment-sub">지민 · 00:47</div>
                   </td>
-                  <td class="new-col"><div class="dl-btn">⬇ 다운로드</div></td>
+                  <td><span class="dash">-</span></td>
+                  <td class="new-col">18:10:15~18:11:02</td>
+                  <td class="new-col">
+                    <div class="replay-cell lockable"><span class="mini-toggle"><span class="knob"></span></span><span class="replay-state">Off</span></div>
+                    <div class="override-note">✎ 기본값 On에서 관리자가 개별 Off로 변경(예시)</div>
+                  </td>
+                  <td class="new-col"><div class="dl-btn lockable">⬇ 다운로드</div></td>
                 </tr>
 
                 <tr>
@@ -402,8 +426,6 @@
                   <td>BTS</td>
                   <td>작은 것들을 위한 시 (Boy With Luv) (feat. Halsey)</td>
                   <td><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟩</span></span></td>
-                  <td class="new-col"><span class="dash">-</span></td>
-                  <td class="new-col"><span class="dash">-</span></td>
                   <td class="new-col"><span class="dash">-</span></td>
                   <td class="new-col"><span class="na">N/A</span></td>
                   <td class="new-col"><span class="na">N/A</span></td>
@@ -416,18 +438,25 @@
         </div>
 
         <template id="note-seg-cols-admin">
-          <span class="pop-tag">💬 PRD 설명 — No.1 발화 세그먼트 컬럼 확장</span>
+          <span class="pop-tag">💬 PRD 설명 — No.1 발화 세그먼트 표기</span>
           <ul>
-            <li>발화 세그먼트 정의: 동일 시간대 발화는 아티스트 구분 없이 1개 세그먼트로 처리(예: 1~10초 = 세그먼트1).</li>
-            <li>세그먼트는 실제 발생 시점 기준으로 음원 트랙 사이 Track No 순번에 자동 삽입됩니다(QA 화면의 &laquo;사전 녹음 파일&raquo; 삽입 행과 유사 패턴).</li>
+            <li><b>「세그먼트」는 기획/개발 내부 커뮤니케이션용 분류 용어입니다.</b> 동일 시간대 발화는 아티스트 구분 없이 1개 단위로 묶어 처리(예: 1~10초 발화 = 세그먼트1)한다는 <u>데이터 그룹핑 규칙</u>일 뿐, 실제 화면에 "세그먼트 N"이라는 문구를 그대로 노출하라는 의미가 아닙니다.</li>
+            <li><b>Track No./DSP/아티스트명 컬럼</b>: 음원 트랙이 아니므로 셋 다 <code>-</code>(공란) 처리합니다.</li>
+            <li><b>제목 컬럼(★리터럴 UI 텍스트, lokalise 대상)</b>: 마이크 아이콘 + <code>아티스트 토크 01</code>, <code>아티스트 토크 02</code>… 형식으로, 파티 내 발화 발생 순서대로 2자리 일련번호(01부터)를 붙여 노출합니다. 바로 아래 보조줄에 발화 아티스트명(복수 시 쉼표 구분)과 발화 길이(<code>MM:SS</code>)를 함께 표기합니다 — 별도 컬럼을 새로 만들지 않고 기존 "제목" 컬럼 안에 병기하는 방식입니다.</li>
+            <li><b>③ 발화 시작~종료 시각</b>만 신규 컬럼으로 추가합니다(<code>HH:MM:SS~HH:MM:SS</code>, KST). 세그먼트 행은 실제 발생 시점 기준으로 음원 트랙 사이 Track No 순번 위치에 자동 삽입됩니다.</li>
             <li>동시 발화 가능 인원 상한: 호스트 포함 최대 20명(호스트 1 + 아티스트 최대 19).</li>
+            <li>세그먼트 행의 발화 아티스트/시작~종료 시각/발화 길이는 시스템이 자동 산출하는 데이터로, Admin/BS 어디서도 직접 편집 대상이 아닙니다(조회 전용).</li>
+            <li><b>이 목업의 보라색 행 배경/좌측 보라색 테두리는 설명 편의를 위한 예시 스타일일 뿐입니다.</b> 반드시 지켜야 하는 것은 노란색으로 표시된 신규 컬럼(③)의 구조·데이터와 위에서 설명한 "제목" 컬럼의 표기 형식이며, 행 배경색 등 시각 스타일 자체는 실제 프로덕트 디자인 컨벤션에 맞게 자유롭게 조정해도 무방합니다.</li>
             <li>EX-02: 발화 세그먼트 없이 종료된 파티는 세그먼트 행 자체가 미표기(음원 트랙만 노출).</li>
           </ul>
         </template>
         <template id="note-replay-admin">
           <span class="pop-tag">💬 PRD 설명 — No.2 Replay On/Off</span>
           <ul>
-            <li>Replay 노출 On/Off: 세그먼트 행에만 제공(음원 트랙 행은 N/A). 기본값 On, Off→On 재변경 불가(단방향 — 위 세그먼트 2 예시).</li>
+            <li>Replay 노출 On/Off: 세그먼트 행에만 제공(음원 트랙 행은 N/A).</li>
+            <li><b>기본값은 무조건 On이 아닙니다.</b> 파티 예약 당시 설정하여 실제 파티에 적용된 파티 전체 <code>다시듣기 지원</code> 값을 그대로 따릅니다 — <code>다시듣기 지원</code>으로 예약된 파티라면 각 세그먼트가 생성될 때 기본 On으로 노출되고, <code>지원 안함</code>으로 예약된 파티는 애초에 다시듣기 자체가 제공되지 않으므로 이 컬럼 전체가 dim 처리됩니다(EX-03 참고). 위 세그먼트 2행은 기본값 On에서 관리자가 개별적으로 Off로 변경한 예시입니다("✎" 표기 참고).</li>
+            <li><b>실제 음원(발화) 파일 자체는 삭제하지 않으므로, On↔Off 양방향으로 언제든 자유롭게 재변경 가능합니다.</b> 파티 전체 단위 <code>다시듣기 지원</code> 토글(하단, 지원→지원안함 단방향)과는 별개의 정책이며 그 단방향 원칙을 따르지 않습니다 — 혼동 주의.</li>
+            <li><b>편집 가능 시점</b>: 세그먼트 데이터 자체가 파티 종료 후에만 생성·노출되며, 그마저도 파티 종료 직후 약 1~2분의 &laquo;리플레이 생성중&raquo; 구간에는 잠금 처리됩니다(No.4 참고 — 위 🧪 데모 버튼으로 직접 확인 가능). 생성이 완료된 이후로는 기간 제한 없이 언제든 즉시 On/Off 전환 가능합니다(별도 편집/저장 버튼 없이 클릭 즉시 반영 — 파티 전체 다시듣기 토글의 편집→적용/취소 절차와 다름).</li>
             <li>EX-03: 파티 전체 &laquo;다시듣기 지원&raquo;이 &laquo;지원 안함&raquo;이면 Replay On/Off 컬럼 전체 dim 처리.</li>
           </ul>
         </template>
@@ -435,7 +464,19 @@
           <span class="pop-tag">💬 PRD 설명 — No.3 음성 파일 다운로드</span>
           <ul>
             <li>음성 파일 다운로드: 세그먼트 1건당 1파일, 서버 저장 원본 포맷 그대로.</li>
-            <li>Admin/BS 동일 권한(APP/리스너 다운로드 제한과 무관한 별도 운영 기능).</li>
+            <li><b>편집(다운로드) 가능 시점</b>: 파티 종료 후 &laquo;리플레이 생성중&raquo; 구간(약 1~2분, No.4 참고)이 끝나면 그 이후로는 언제든지 항상 가능. 해당 세그먼트의 Replay On/Off 상태 및 파티 전체 &laquo;다시듣기 지원&raquo; 여부와 무관하게 제공(APP/리스너 다운로드 제한과는 별개의 운영 기능).</li>
+            <li>Admin/BS 동일 권한.</li>
+          </ul>
+        </template>
+        <template id="note-genlock-admin">
+          <span class="pop-tag">💬 PRD 설명 — No.4 리플레이 생성중 잠금</span>
+          <ul>
+            <li>음성 송출(아티스트 토크) 기능 특성상, 파티가 종료된다고 바로 다시듣기 콘텐츠가 만들어지는 것이 아니라 서버에서 세그먼트/리플레이 데이터를 생성하는 처리 시간이 필요합니다.</li>
+            <li><b>지속 시간</b>: 파티 종료 시점부터 약 1~2분(정확한 값은 서버 처리 성능 실측 후 개발 단계에서 확정 필요).</li>
+            <li><b>노출 위치/문구</b>: 화면 상단(플레이리스트 영역 위)에 배너로 노출: <code>현재 다시듣기 생성중입니다. 잠시만 기다려 주세요.</code> (신규 lokalise 키 필요)</li>
+            <li><b>잠금 범위</b>: 이 배너가 떠 있는 동안에는 세그먼트별 Replay On/Off 토글, 음성 파일 다운로드 버튼, 파티 전체 <code>다시듣기 지원</code> 편집 버튼이 모두 dim 처리되어 클릭할 수 없습니다. 생성이 끝나면(배너가 사라지면) 별도 새로고침 없이 즉시 모든 항목이 정상 활성화됩니다.</li>
+            <li>Admin/BS 동일 적용.</li>
+            <li>위 🧪 데모 버튼(①생성완료 / ②생성중)을 직접 클릭해 두 상태의 화면 차이를 비교해볼 수 있습니다 — 데모 버튼 자체는 목업 설명용이며 실제 화면 요소가 아닙니다.</li>
           </ul>
         </template>
 
@@ -445,14 +486,14 @@
             <div class="radio-group">
               <div>
                 <div class="radio-row"><input type="radio" name="replay" checked><label>다시듣기 지원</label></div>
-                <div class="radio-sub">리스닝 파티 종료 후 다시듣기로 자동 전환됩니다. 커뮤니티 사용자에게 다시듣기가 제공됩니다.</div>
+                <div class="radio-sub">리스닝 파티 종료 후 다시듣기로 자동 전환됩니다. 커뮤니티 사용자들에게 다시듣기가 제공됩니다.</div>
               </div>
               <div>
                 <div class="radio-row"><input type="radio" name="replay"><label>지원 안함</label></div>
                 <div class="radio-sub">리스닝 파티 종료 후 다시듣기가 제공되지 않습니다.</div>
               </div>
             </div>
-            <div class="btn" style="margin-top:10px;width:64px;">편집</div>
+            <div class="btn lockable" style="margin-top:10px;width:64px;">편집</div>
           </div>
         </div>
 
@@ -539,5 +580,21 @@
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') hide(); });
   window.addEventListener('resize', function(){ if(current) position(current); });
   window.addEventListener('scroll', function(){ if(current) position(current); }, true);
+})();
+
+// ===== 목업 전용: 리플레이 생성중 / 생성완료 상태 데모 스위치 =====
+(function(){
+  var btnReady = document.getElementById('btnStateReady');
+  var btnGen = document.getElementById('btnStateGenerating');
+  var banner = document.getElementById('genBanner');
+  if(!btnReady || !btnGen || !banner) return;
+  function setState(generating){
+    btnReady.classList.toggle('active', !generating);
+    btnGen.classList.toggle('active', generating);
+    banner.classList.toggle('hidden', !generating);
+    document.body.classList.toggle('demo-generating', generating);
+  }
+  btnReady.addEventListener('click', function(){ setState(false); });
+  btnGen.addEventListener('click', function(){ setState(true); });
 })();
 </script>

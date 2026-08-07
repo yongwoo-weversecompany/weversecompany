@@ -202,7 +202,6 @@
   <main class="bs-main">
     <div class="title-row">
       <h1 class="page-title">리스닝 파티 관리</h1>
-      <span class="status-pill"><span class="dot"></span>STANDBY · 대기모드 (진행 중 분류 포함)</span>
       <div class="btn">돌아가기</div>
     </div>
     <p class="page-sub">목업 참고: PRD &laquo;ADMIN/BS - 공식 파티 아티스트 음성 송출&raquo; v8 · 2-2. 진행 중 파티 상세(BS, 신규) · 03_BS_예약대기중_상세화면.jpg 레이아웃 기준(게시커뮤니티/미디어ID/등록수정정보 없음) + 신규 view-only 항목 1개 삽입</p>
@@ -247,13 +246,13 @@
       <div class="field-label-row"><span class="num-badge">③</span><span class="field-label plain-label">파티 게시자</span></div>
       <div class="field-body">
         <span class="publisher-chip">hobi</span>
-        <div class="help-text">프로필 국가에 따라 팬이 접하는 아티스트 언어가 변경될 수 있습니다.</div>
+        <div class="help-text">리스닝 파티를 예약 완료한 후에는 게시자를 변경할 수 없습니다.</div>
       </div>
     </div>
 
     <!-- ④ 미디어보기 링크 -->
     <div class="field-row">
-      <div class="field-label-row"><span class="num-badge">④</span><span class="field-label plain-label">미디어보기 링크</span></div>
+      <div class="field-label-row"><span class="num-badge">④</span><span class="field-label plain-label">미리보기 링크</span></div>
       <div class="field-body" style="display:flex;flex-direction:column;gap:8px;">
         <div class="copy-row"><span class="view-value" style="width:36px;color:var(--text-sub);">WEB</span><span class="view-value"><a href="#">https://listening-party.weversedev.io/bts/wlp/1-60754</a></span><span class="btn-copy">Copy</span></div>
         <div class="copy-row"><span class="view-value" style="width:36px;color:var(--text-sub);">App</span><span class="view-value"><a href="#">weverse://bts/wlp/1-60754</a></span><span class="btn-copy">Copy</span></div>
@@ -298,8 +297,8 @@
       <div class="field-body">
         <div class="seg-control"><span class="seg-btn selected">공개</span><span class="seg-btn">비공개</span></div>
         <div class="help-text">
-          &bull; 예약 파티 공개 시간을 파티 시작 시간보다 이전으로 설정하면 예약 상태 파티가 파티 목록에 노출됩니다.<br>
-          &bull; 비공개로 설정할 경우 파티 시작 시간까지 파티 목록에 노출되지 않습니다.
+          '공개'로 등록 시, 예약 파티 공개 시간으로 설정한 시간에 Party 탭에서 예약 파티로 노출됩니다. 커뮤니티 멤버들은 예약 파티 시작 전에는 채팅과 좋아요를 할 수 없습니다.<br>
+          '비공개'로 등록 시, 파티를 실제로 시작하면 Party 탭에서 노출됩니다. 파티 시작 전에는 노출되지 않습니다.
         </div>
       </div>
     </div>
@@ -315,12 +314,12 @@
       <div class="field-label-row"><span class="num-badge">⑨</span><span class="field-label plain-label">리스닝 파티 플레이리스트</span></div>
       <div class="field-body">
         <table class="playlist-table">
-          <tr><th style="width:60px;">Track No.</th><th style="width:130px;">DSP</th><th>아티스트</th></tr>
-          <tr><td>1</td><td>SPOTIFY<br><span class="view-value" style="font-size:11px;color:var(--text-sub);">대한민국(KR)</span></td><td><div class="artist-cell"><div class="artist-thumb"></div>aespa <span class="song-select">LEMONADE ▾</span><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟦</span></span></div></td></tr>
-          <tr><td>2</td><td>SPOTIFY<br><span class="view-value" style="font-size:11px;color:var(--text-sub);">대한민국(KR)</span></td><td><div class="artist-cell"><div class="artist-thumb"></div>Hearts2Hearts <span class="song-select">Lemon Tang ▾</span><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟦</span></span></div></td></tr>
-          <tr><td>3</td><td>SPOTIFY<br><span class="view-value" style="font-size:11px;color:var(--text-sub);">대한민국(KR)</span></td><td><div class="artist-cell"><div class="artist-thumb"></div>Oliver Tree <span class="song-select">Life Goes On ▾</span><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟦</span></span></div></td></tr>
-          <tr><td>4</td><td>SPOTIFY<br><span class="view-value" style="font-size:11px;color:var(--text-sub);">대한민국(KR)</span></td><td><div class="artist-cell"><div class="artist-thumb"></div>RESCENE <span class="song-select">LOVE ATTACK ▾</span><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟦</span></span></div></td></tr>
-          <tr><td>5</td><td>SPOTIFY<br><span class="view-value" style="font-size:11px;color:var(--text-sub);">대한민국(KR)</span></td><td><div class="artist-cell"><div class="artist-thumb"></div>Keyshia Cole <span class="song-select">Love ▾</span><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟦</span></span></div></td></tr>
+          <tr><th style="width:60px;">Track No.</th><th style="width:130px;">DSP</th><th>아티스트</th><th>제목</th></tr>
+          <tr><td>1</td><td>SPOTIFY<br><span class="view-value" style="font-size:11px;color:var(--text-sub);">대한민국(KR)</span></td><td><div class="artist-cell"><div class="artist-thumb"></div>aespa</div></td><td><span class="song-select">LEMONADE ▾</span><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟦</span></span></td></tr>
+          <tr><td>2</td><td>SPOTIFY<br><span class="view-value" style="font-size:11px;color:var(--text-sub);">대한민국(KR)</span></td><td><div class="artist-cell"><div class="artist-thumb"></div>Hearts2Hearts</div></td><td><span class="song-select">Lemon Tang ▾</span><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟦</span></span></td></tr>
+          <tr><td>3</td><td>SPOTIFY<br><span class="view-value" style="font-size:11px;color:var(--text-sub);">대한민국(KR)</span></td><td><div class="artist-cell"><div class="artist-thumb"></div>Oliver Tree</div></td><td><span class="song-select">Life Goes On ▾</span><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟦</span></span></td></tr>
+          <tr><td>4</td><td>SPOTIFY<br><span class="view-value" style="font-size:11px;color:var(--text-sub);">대한민국(KR)</span></td><td><div class="artist-cell"><div class="artist-thumb"></div>RESCENE</div></td><td><span class="song-select">LOVE ATTACK ▾</span><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟦</span></span></td></tr>
+          <tr><td>5</td><td>SPOTIFY<br><span class="view-value" style="font-size:11px;color:var(--text-sub);">대한민국(KR)</span></td><td><div class="artist-cell"><div class="artist-thumb"></div>Keyshia Cole</div></td><td><span class="song-select">Love ▾</span><span class="dsp-icons"><span>♪</span><span>🟢</span><span>🟦</span></span></td></tr>
         </table>
         <button type="button" class="info-trigger info-chip" data-note-id="note-playlist-cols-bs">💬 컬럼 구성 설명</button>
       </div>
@@ -337,7 +336,7 @@
       <div class="field-body">
         <div class="radio-group">
           <div><div class="radio-row"><input type="radio" name="replay" checked><label>다시듣기 지원</label></div>
-          <div class="radio-sub">리스닝 파티 종료 후 다시듣기로 자동 전환됩니다. 커뮤니티 사용자에게 다시듣기가 제공됩니다.</div></div>
+          <div class="radio-sub">리스닝 파티 종료 후 다시듣기로 자동 전환됩니다. 커뮤니티 사용자들에게 다시듣기가 제공됩니다.</div></div>
           <div><div class="radio-row"><input type="radio" name="replay" disabled><label style="color:var(--text-faint);">지원 안함</label></div>
           <div class="radio-sub">리스닝 파티 종료 후 다시듣기가 제공되지 않습니다.</div></div>
         </div>
