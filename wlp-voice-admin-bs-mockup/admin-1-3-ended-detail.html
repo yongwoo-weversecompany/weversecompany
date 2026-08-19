@@ -1,6 +1,11 @@
-<title>ADMIN 1-3. 종료된 파티 상세 (목업, 플레이리스트 컬럼 확장)</title>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADMIN 1-3. 종료된 파티 상세 — 개발용 클린 버전</title>
 <style>
-  :root{
+:root{
     --navy: #0b1226;
     --cyan: #00c9c0;
     --cyan-dark: #00a8a0;
@@ -23,194 +28,106 @@
     --segment-bg: #f1eefc;
     --segment-border: #d9cff2;
   }
-  *{box-sizing:border-box;}
-  body{
+*{box-sizing:border-box;}
+body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",Segoe UI,Roboto,sans-serif;
     color:var(--text);background:#f4f5f7;font-size:13px;line-height:1.5;
   }
-  .app{display:flex;min-height:100vh;}
-
-  /* ===== GNB ===== */
+.app{display:flex;min-height:100vh;}
+/* ===== GNB ===== */
   .gnb{width:212px;flex:0 0 212px;background:var(--navy);color:#c9cdd8;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
-  .gnb-logo{display:flex;align-items:center;gap:8px;padding:16px 16px;color:#fff;font-weight:700;font-size:14px;border-bottom:1px solid rgba(255,255,255,.08);}
-  .gnb-logo .mark{width:22px;height:22px;border-radius:5px;background:var(--cyan);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;}
-  .gnb-menu{flex:1;overflow-y:auto;padding:8px 0;}
-  .gnb-item{padding:9px 16px;font-size:12.5px;color:#aab0c0;cursor:default;display:flex;align-items:center;justify-content:space-between;}
-  .gnb-item .chev{font-size:10px;opacity:.5;}
-  .gnb-item.active-group{color:#fff;font-weight:600;}
-  .gnb-sub{background:rgba(255,255,255,.02);}
-  .gnb-sub .gnb-subitem{padding:8px 16px 8px 30px;font-size:12.5px;color:#9aa1b3;}
-  .gnb-sub .gnb-subitem.active{background:rgba(0,201,192,.14);color:var(--cyan);font-weight:700;border-left:3px solid var(--cyan);padding-left:27px;}
-  .gnb-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);color:#7a8193;font-size:16px;}
-
-  /* ===== MAIN ===== */
+.gnb-logo{display:flex;align-items:center;gap:8px;padding:16px 16px;color:#fff;font-weight:700;font-size:14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.gnb-logo .mark{width:22px;height:22px;border-radius:5px;background:var(--cyan);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;}
+.gnb-menu{flex:1;overflow-y:auto;padding:8px 0;}
+.gnb-item{padding:9px 16px;font-size:12.5px;color:#aab0c0;cursor:default;display:flex;align-items:center;justify-content:space-between;}
+.gnb-item .chev{font-size:10px;opacity:.5;}
+.gnb-item.active-group{color:#fff;font-weight:600;}
+.gnb-sub{background:rgba(255,255,255,.02);}
+.gnb-sub .gnb-subitem{padding:8px 16px 8px 30px;font-size:12.5px;color:#9aa1b3;}
+.gnb-sub .gnb-subitem.active{background:rgba(0,201,192,.14);color:var(--cyan);font-weight:700;border-left:3px solid var(--cyan);padding-left:27px;}
+.gnb-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);color:#7a8193;font-size:16px;}
+/* ===== MAIN ===== */
   .main{flex:1;min-width:0;display:flex;flex-direction:column;}
-  .topbar{height:44px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;color:var(--text-sub);flex:0 0 auto;}
-  .topbar .crumb b{color:var(--text);font-weight:600;}
-  .topbar .right{display:flex;gap:14px;align-items:center;color:var(--text-sub);}
-  .topbar .right span{cursor:default;}
-
-  .content-wrap{padding:22px 28px 60px;max-width:1560px;}
-  .title-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
-  .page-title{font-size:19px;font-weight:700;margin:0;}
-  .page-sub{color:var(--text-sub);font-size:12px;margin:0 0 18px;}
-
-  .status-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;border-radius:20px;padding:4px 11px;letter-spacing:.2px;}
-  .status-pill .dot{width:6px;height:6px;border-radius:50%;}
-  .status-pill.done{background:#eef0f4;color:#565e6b;}
-  .status-pill.done .dot{background:#8b93a3;}
-
-  .legend{display:flex;gap:16px;align-items:center;margin-bottom:16px;font-size:12px;color:var(--text-sub);flex-wrap:wrap;}
-  .legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-2px;}
-  .legend .sw-yellow{background:var(--yellow-border);border:1px solid var(--yellow-border-strong);}
-  .legend .sw-segment{background:var(--segment-bg);border:1px solid var(--segment-border);}
-  .legend .sw-note{background:var(--note-bg);border:1px dashed var(--note-border);}
-  .legend .sw-no{background:linear-gradient(180deg,#ff9a3d,#ff7a00);border:1px solid #e56800;}
-
-  /* ===== FORM CARD ===== */
+.topbar{height:44px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;color:var(--text-sub);flex:0 0 auto;}
+.topbar .crumb b{color:var(--text);font-weight:600;}
+.topbar .right{display:flex;gap:14px;align-items:center;color:var(--text-sub);}
+.topbar .right span{cursor:default;}
+.content-wrap{padding:22px 28px 60px;max-width:1560px;}
+.title-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.page-title{font-size:19px;font-weight:700;margin:0;}
+.status-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;border-radius:20px;padding:4px 11px;letter-spacing:.2px;}
+.status-pill .dot{width:6px;height:6px;border-radius:50%;}
+.status-pill.done{background:#eef0f4;color:#565e6b;}
+.status-pill.done .dot{background:#8b93a3;}
+/* ===== FORM CARD ===== */
   .form-card{background:#fff;border:1px solid var(--border);border-radius:6px;padding:20px 28px 30px;}
-  .card-toolbar{display:flex;justify-content:flex-end;gap:8px;padding-bottom:14px;border-bottom:1px solid #f1f2f4;margin-bottom:4px;}
-
-  .field-row{display:flex;padding:13px 0;border-bottom:1px solid #f1f2f4;gap:18px;}
-  .field-row:first-of-type{padding-top:2px;}
-  .field-label-col{flex:0 0 190px;display:flex;align-items:flex-start;gap:5px;padding-top:2px;}
-  .field-label{flex:1 1 auto;min-width:0;font-weight:700;font-size:13px;color:var(--text);}
-  .plain-label{font-weight:600;color:var(--text-sub);}
-  .num-badge{
-    flex:0 0 auto;width:18px;height:18px;border-radius:50%;border:1px solid var(--border-strong);
-    color:var(--text-sub);font-size:10.5px;display:flex;align-items:center;justify-content:center;
-    background:#fafafa;font-weight:600;margin-top:1px;
-  }
-  .no-tag{line-height:normal;
-    flex:0 0 auto;font-size:10px;font-weight:800;color:#fff;
-    background:linear-gradient(180deg,#ff9a3d,#ff7a00);border:1px solid #e56800;
-    border-radius:3px;padding:2px 6px;margin-top:1px;letter-spacing:.2px;white-space:nowrap;
-    box-shadow:0 1px 2px rgba(255,122,0,.35);
-  }
-  th .no-tag{line-height:normal;display:inline-flex;vertical-align:1px;margin-right:4px;}
-  th.th-group{background:#fff2df;border-bottom:2px solid #ff9a3d;text-align:center;font-size:10.5px;white-space:normal;padding:6px 8px;}
-  .field-body{flex:1;min-width:0;}
-  .view-value{font-size:13px;color:var(--text);}
-  .view-value.muted{color:var(--text-sub);}
-  .view-value a{color:var(--cyan-dark);text-decoration:none;}
-
-  .thumb-box{width:96px;height:96px;border-radius:6px;background:#e9eaee;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;color:var(--cyan);border:1px solid var(--border);}
-
-  table.title-table{width:100%;border-collapse:collapse;font-size:12.5px;}
-  table.title-table th{text-align:left;font-weight:600;color:var(--text-sub);font-size:11.5px;padding:6px 10px;border-bottom:1px solid var(--border);}
-  table.title-table td{padding:10px;vertical-align:top;}
-  .lang-cell{width:110px;color:var(--text-sub);}
-  .title-cell-row{background:var(--mint-bg);border:1px solid var(--mint-border);border-radius:4px;}
-  .ro-box{border:1px solid var(--border-strong);border-radius:4px;background:#fff;padding:8px 10px;font-size:12.5px;color:var(--text);}
-  .ro-box + .ro-box{margin-top:6px;}
-  .char-count{float:right;font-size:10.5px;color:var(--text-faint);}
-
-  /* ===== PLAYLIST TABLE (확장) ===== */
+.card-toolbar{display:flex;justify-content:flex-end;gap:8px;padding-bottom:14px;border-bottom:1px solid #f1f2f4;margin-bottom:4px;}
+.field-row{display:flex;padding:13px 0;border-bottom:1px solid #f1f2f4;gap:18px;}
+.field-row:first-of-type{padding-top:2px;}
+.field-label-col{flex:0 0 190px;display:flex;align-items:flex-start;gap:5px;padding-top:2px;}
+.field-label{flex:1 1 auto;min-width:0;font-weight:700;font-size:13px;color:var(--text);}
+.plain-label{font-weight:600;color:var(--text-sub);}
+th
+.field-body{flex:1;min-width:0;}
+.view-value{font-size:13px;color:var(--text);}
+.view-value.muted{color:var(--text-sub);}
+.view-value a{color:var(--cyan-dark);text-decoration:none;}
+.thumb-box{width:96px;height:96px;border-radius:6px;background:#e9eaee;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;color:var(--cyan);border:1px solid var(--border);}
+table.title-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+table.title-table th{text-align:left;font-weight:600;color:var(--text-sub);font-size:11.5px;padding:6px 10px;border-bottom:1px solid var(--border);}
+table.title-table td{padding:10px;vertical-align:top;}
+.lang-cell{width:110px;color:var(--text-sub);}
+.title-cell-row{background:var(--mint-bg);border:1px solid var(--mint-border);border-radius:4px;}
+.ro-box{border:1px solid var(--border-strong);border-radius:4px;background:#fff;padding:8px 10px;font-size:12.5px;color:var(--text);}
+.ro-box + .ro-box{margin-top:6px;}
+.char-count{float:right;font-size:10.5px;color:var(--text-faint);}
   .table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:6px;}
-  table.playlist-table{width:100%;border-collapse:collapse;font-size:12px;min-width:980px;}
-  table.playlist-table th{
+table.playlist-table{width:100%;border-collapse:collapse;font-size:12px;min-width:980px;}
+table.playlist-table th{
     text-align:left;font-weight:600;color:var(--text-sub);font-size:11px;
     padding:9px 10px;border-bottom:1px solid var(--border);background:#fafbfc;white-space:nowrap;
   }
-  table.playlist-table th.th-new{background:var(--yellow-header);color:#5c4a00;}
-  table.playlist-table th .num-badge{margin-right:3px;background:#fff;}
-  table.playlist-table td{padding:10px;color:var(--text);border-bottom:1px solid #f5f6f8;vertical-align:middle;}
-  table.playlist-table td.new-col{background:#fffdf3;}
-  .dsp-icons{display:inline-flex;gap:4px;vertical-align:middle;margin-left:6px;}
-  .dsp-icons span{width:16px;height:16px;border-radius:3px;background:#eee;display:inline-block;font-size:9px;text-align:center;line-height:16px;}
-  .dash{color:var(--text-faint);}
-  .na{color:var(--text-faint);font-size:11px;}
-
-  /* 발화 세그먼트 행 — 배경색은 설명 편의를 위한 예시 스타일(실제 구현 시 필수 아님, 팝오버 참고) */
+table.playlist-table td{padding:10px;color:var(--text);border-bottom:1px solid #f5f6f8;vertical-align:middle;}
+.dsp-icons{display:inline-flex;gap:4px;vertical-align:middle;margin-left:6px;}
+.dsp-icons span{width:16px;height:16px;border-radius:3px;background:#eee;display:inline-block;font-size:9px;text-align:center;line-height:16px;}
+.dash{color:var(--text-faint);}
+.na{color:var(--text-faint);font-size:11px;}
   tr.segment-row td{background:var(--segment-bg);border-bottom:1px solid var(--segment-border);}
-  tr.segment-row td:first-child{border-left:3px solid #8b6fd1;}
-  .segment-title{font-weight:700;color:#5b3fa0;}
-  .segment-sub{font-size:10.5px;color:var(--text-sub);margin-top:2px;}
-  .override-note{font-size:9.5px;color:var(--text-faint);margin-top:3px;line-height:1.4;}
-
-  /* mini toggle for Replay column */
+tr.segment-row td:first-child{border-left:3px solid #8b6fd1;}
+.segment-title{font-weight:700;color:#5b3fa0;}
+.segment-sub{font-size:10.5px;color:var(--text-sub);margin-top:2px;}
+/* mini toggle for Replay column */
   .mini-toggle{position:relative;width:32px;height:18px;border-radius:10px;background:#d7dbe1;display:inline-block;vertical-align:middle;}
-  .mini-toggle .knob{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);}
-  .mini-toggle.on{background:var(--cyan);}
-  .mini-toggle.on .knob{left:16px;}
-  .mini-toggle.locked{opacity:.55;}
-  .replay-cell{display:flex;align-items:center;gap:6px;}
-  .replay-state{font-size:11px;font-weight:700;color:var(--text-sub);}
-  .lock-ic{font-size:10px;color:var(--text-faint);}
-
-  .dl-btn{
+.mini-toggle .knob{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);}
+.mini-toggle.on{background:var(--cyan);}
+.mini-toggle.on .knob{left:16px;}
+.mini-toggle.locked{opacity:.55;}
+.replay-cell{display:flex;align-items:center;gap:6px;}
+.replay-state{font-size:11px;font-weight:700;color:var(--text-sub);}
+.lock-ic{font-size:10px;color:var(--text-faint);}
+.dl-btn{
     display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:4px;
     border:1px solid var(--border-strong);background:#fff;font-size:11px;color:var(--text);
   }
-
-  /* ===== 리플레이 생성중 배너 + 목업 전용 상태 데모 스위치 (2026-08-07 추가) ===== */
-  .state-demo{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding:8px 10px;background:#eef0f4;border-radius:6px;}
-  .state-demo .demo-label{font-size:11px;color:var(--text-sub);font-weight:800;}
-  .state-demo-btn{height:26px;padding:0 12px;border-radius:4px;font-size:11.5px;font-weight:700;border:1px solid var(--border-strong);background:#fff;color:var(--text-sub);cursor:pointer;}
-  .state-demo-btn.active{background:#1b1f28;color:#fff;border-color:#1b1f28;}
-  .replay-gen-banner{
+.replay-gen-banner{
     display:flex;align-items:center;gap:10px;
     background:#fff6e5;border:1px solid #f0c34a;color:#7a4a00;
     border-radius:6px;padding:11px 14px;margin-bottom:14px;font-size:12.5px;font-weight:700;
   }
-  .replay-gen-banner.hidden{display:none;}
-  .replay-gen-banner .spinner{width:14px;height:14px;border-radius:50%;border:2px solid #f0c34a;border-top-color:#7a4a00;animation:wlpspin .8s linear infinite;flex:0 0 auto;}
-  @keyframes wlpspin{to{transform:rotate(360deg);}}
-  body.demo-generating .lockable{opacity:.4;pointer-events:none;filter:grayscale(55%);}
-
-  .radio-group{display:flex;flex-direction:column;gap:10px;}
-  .radio-row{display:flex;align-items:flex-start;gap:8px;}
-  .radio-row input[type=radio]{width:16px;height:16px;accent-color:var(--cyan-dark);margin-top:2px;flex:0 0 auto;}
-  .radio-row label{font-size:13px;}
-  .radio-sub{color:var(--text-sub);font-size:11.5px;margin-top:2px;line-height:1.6;}
-
-  /* ===== PRD 설명(코멘트) 박스 ===== */
-  .prd-note{margin-top:10px;border:1px dashed var(--note-border);background:var(--note-bg);border-radius:5px;padding:9px 11px;display:flex;gap:8px;align-items:flex-start;}
-  .prd-note .note-tag{flex:0 0 auto;background:var(--note-tag);color:#fff;font-size:9.5px;font-weight:800;border-radius:3px;padding:2px 6px;white-space:nowrap;letter-spacing:.2px;margin-top:1px;}
-  .prd-note .note-body{font-size:11px;color:var(--note-text);line-height:1.65;}
-  .prd-note .note-body b{color:#3d4250;}
-  .prd-note .note-body ul{margin:4px 0 0;padding-left:15px;}
-  .prd-note .note-body li{margin-bottom:3px;}
-  .prd-note .note-body>.lead{color:#8a1a1e;font-weight:700;}
-
-  .btn{height:32px;padding:0 16px;border-radius:4px;font-size:12.5px;font-weight:600;border:1px solid var(--border-strong);background:#fff;color:var(--text);cursor:default;display:flex;align-items:center;gap:6px;}
-
-  /* ===== INFO POPOVER SYSTEM (2026-08 개편: 설명은 hover/click 시에만 노출, 실제 화면 개입 최소화) ===== */
-  .info-trigger{cursor:pointer;user-select:none;}
-  .info-dot{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:16px;height:16px;border-radius:50%;flex:0 0 auto;
-    background:#eef0f4;color:#6b7280;font-size:10px;font-weight:800;
-    border:1px solid #d7dbe1;
-  }
-  .info-dot:hover,.info-dot:focus{background:#00c9c0;color:#012826;border-color:#00a8a0;outline:none;}
-  .no-tag.info-trigger:hover,.no-tag.info-trigger:focus{box-shadow:0 0 0 3px rgba(0,201,192,.4);outline:none;}
-  .info-chip{
-    display:inline-flex;align-items:center;gap:5px;
-    background:#eef0f4;color:#525866;font-size:11px;font-weight:700;
-    border:1px solid #d7dbe1;border-radius:20px;padding:4px 11px;margin-top:8px;
-  }
-  .info-chip:hover,.info-chip:focus{background:#1b1f28;color:#fff;border-color:#1b1f28;outline:none;}
-  .prd-popover{
-    display:none;position:fixed;z-index:2000;max-width:300px;
-    background:#1b1f28;color:#e7e9ee;border-radius:8px;
-    padding:11px 13px;font-size:11px;line-height:1.65;
-    box-shadow:0 10px 28px rgba(0,0,0,.32);
-  }
-  .prd-popover.show{display:block;}
-  .prd-popover .pop-tag{
-    display:inline-flex;align-items:center;background:#5b6270;color:#fff;
-    font-size:9.5px;font-weight:800;border-radius:3px;padding:2px 6px;
-    letter-spacing:.2px;margin-bottom:6px;
-  }
-  .prd-popover .lead{color:#ff9a9d;font-weight:700;display:block;margin-bottom:5px;}
-  .prd-popover b{color:#ffd479;}
-  .prd-popover ul{margin:4px 0 0;padding-left:15px;}
-  .prd-popover li{margin-bottom:4px;}
-  .prd-popover code{background:rgba(255,255,255,.14);padding:1px 4px;border-radius:3px;}
+.replay-gen-banner.hidden{display:none;}
+.replay-gen-banner .spinner{width:14px;height:14px;border-radius:50%;border:2px solid #f0c34a;border-top-color:#7a4a00;animation:wlpspin .8s linear infinite;flex:0 0 auto;}
+@keyframes wlpspin{to{transform:rotate(360deg);}}
+body.demo-generating .lockable{opacity:.4;pointer-events:none;filter:grayscale(55%);}
+.radio-group{display:flex;flex-direction:column;gap:10px;}
+.radio-row{display:flex;align-items:flex-start;gap:8px;}
+.radio-row input[type=radio]{width:16px;height:16px;accent-color:var(--cyan-dark);margin-top:2px;flex:0 0 auto;}
+.radio-row label{font-size:13px;}
+.radio-sub{color:var(--text-sub);font-size:11.5px;margin-top:2px;line-height:1.6;}
+.btn{height:32px;padding:0 16px;border-radius:4px;font-size:12.5px;font-weight:600;border:1px solid var(--border-strong);background:#fff;color:var(--text);cursor:default;display:flex;align-items:center;gap:6px;}
 </style>
-
+</head>
+<body>
 <div class="app">
   <aside class="gnb">
     <div class="gnb-logo"><span class="mark">W</span> Weverse Admin</div>
@@ -255,20 +172,11 @@
       <div class="title-row">
         <h1 class="page-title">리스닝파티 상세 정보</h1>
       </div>
-      <p class="page-sub">목업 참고: PRD &laquo;ADMIN/BS - 공식 파티 아티스트 음성 송출&raquo; v13 · 1-3. 종료된 파티 상세 화면 · 기존 화면(02_종료파티상세_플레이리스트.jpg) 그대로 + 플레이리스트 테이블 컬럼 3개 확장(③~⑤) + 리플레이 생성중 잠금 정책(No.4) 추가</p>
+      
 
-      <div class="legend">
-        <span><span class="swatch sw-yellow"></span><b>신규 삽입 컬럼 (③~⑤)</b> — 구조·데이터는 반드시 이대로 구현</span>
-        <span><span class="no-tag" style="display:inline-flex;vertical-align:1px;">No.1~4</span> PRD Description/Note 표 항목 번호 — <b>오렌지 배지에 마우스를 올리거나 클릭하면 PRD 설명이 표시됩니다</b></span>
-        <span><span class="swatch sw-segment"></span>발화 세그먼트 행 예시 표기 — <b>배경색 등 스타일은 참고용(실제 디자인은 자유)</b></span>
-      </div>
+      
 
-      <div class="state-demo">
-        <span class="demo-label">🧪 목업 전용 데모 — 아래 두 버튼으로 실제 화면 상태를 비교해보세요</span>
-        <button type="button" class="state-demo-btn active" id="btnStateReady">① 생성 완료 (기본 표시)</button>
-        <button type="button" class="state-demo-btn" id="btnStateGenerating">② 리플레이 생성중 (파티 종료 직후 1~2분)</button>
-        <span class="no-tag info-trigger" data-note-id="note-genlock-admin" title="PRD 설명 보기">No.4</span>
-      </div>
+      
       <div class="replay-gen-banner hidden" id="genBanner">
         <span class="spinner"></span>
         <span>현재 다시듣기 생성중입니다. 잠시만 기다려 주세요.</span>
@@ -278,8 +186,6 @@
         <div class="card-toolbar">
           <div class="btn">← 돌아가기</div>
         </div>
-
-        <!-- 기존 view-only 필드 — 02 화면 그대로, 번호배지 없음 -->
         <div class="field-row">
           <div class="field-label-col"><span class="field-label plain-label">게시 커뮤니티</span></div>
           <div class="field-body"><span class="view-value">BTS</span></div>
@@ -330,39 +236,32 @@
           <div class="field-label-col"><span class="field-label plain-label">제목 및 내용</span></div>
           <div class="field-body">
             <table class="title-table">
-              <tr><th style="width:110px;">언어</th><th>제목 및 내용</th></tr>
+              <tbody><tr><th style="width:110px;">언어</th><th>제목 및 내용</th></tr>
               <tr class="title-cell-row">
                 <td class="lang-cell">한국어</td>
-                <td>
+                <td style="width: 1123px; height: 75px">
                   <div class="ro-box">20260721 리스닝 파티 테스트 <span class="char-count">15/50</span></div>
-                  <div class="ro-box">&nbsp; <span class="char-count">0/100</span></div>
+                  <div class="ro-box" style="width: 1104px; height: 105px">&nbsp; <span class="char-count">0/100</span></div>
                 </td>
               </tr>
-            </table>
+            </tbody></table>
           </div>
         </div>
-
-        <!-- ===== 플레이리스트: 컬럼 확장 (핵심) ===== -->
         <div class="field-row" style="border-bottom:none;">
           <div class="field-label-col"><span class="field-label plain-label">리스닝 파티 플레이리스트</span></div>
           <div class="field-body" style="width:100%;">
             <div class="table-scroll">
               <table class="playlist-table">
+                <tbody>
                 <tr>
-                  <th colspan="5" style="border-bottom:none;"></th>
-                  <th class="th-group"><span class="no-tag info-trigger" data-note-id="note-seg-cols-admin" title="PRD 설명 보기">No.1</span>발화 세그먼트 표기 (제목 컬럼 표기방식 + ③)</th>
-                  <th class="th-group"><span class="no-tag info-trigger" data-note-id="note-replay-admin" title="PRD 설명 보기">No.2</span>Replay On/Off (④)</th>
-                  <th class="th-group"><span class="no-tag info-trigger" data-note-id="note-download-admin" title="PRD 설명 보기">No.3</span>음성 파일 다운로드 (⑤)</th>
-                </tr>
-                <tr>
-                  <th><span class="num-badge">①</span>Track No.</th>
+                  <th>Track No.</th>
                   <th>DSP</th>
                   <th>아티스트명</th>
                   <th>제목</th>
-                  <th><span class="num-badge">②</span>DSP 매핑 아이콘</th>
-                  <th class="th-new"><span class="num-badge">③</span>발화 시작~종료 시각</th>
-                  <th class="th-new"><span class="num-badge">④</span>Replay On/Off</th>
-                  <th class="th-new"><span class="num-badge">⑤</span>음성 파일 다운로드</th>
+                  <th>DSP 매핑 아이콘</th>
+                  <th class="th-new">발화 시작~종료 시각</th>
+                  <th class="th-new">Replay On/Off</th>
+                  <th class="th-new">음성 파일 다운로드</th>
                 </tr>
 
                 <tr>
@@ -415,7 +314,6 @@
                   <td class="new-col">18:10:15~18:11:02</td>
                   <td class="new-col">
                     <div class="replay-cell lockable"><span class="mini-toggle"><span class="knob"></span></span><span class="replay-state">Off</span></div>
-                    <div class="override-note">✎ 기본값 On에서 관리자가 개별 Off로 변경(예시)</div>
                   </td>
                   <td class="new-col"><div class="dl-btn lockable">⬇ 다운로드</div></td>
                 </tr>
@@ -430,62 +328,24 @@
                   <td class="new-col"><span class="na">N/A</span></td>
                   <td class="new-col"><span class="na">N/A</span></td>
                 </tr>
-              </table>
+              </tbody></table>
             </div>
 
-            <button type="button" class="info-trigger info-chip" data-note-id="note-seg-cols-admin" style="margin-top:10px;">💬 발화 세그먼트/컬럼 전체 설명</button>
+            
           </div>
         </div>
 
-        <template id="note-seg-cols-admin">
-          <span class="pop-tag">💬 PRD 설명 — No.1 발화 세그먼트 표기</span>
-          <ul>
-            <li><b>「세그먼트」는 기획/개발 내부 커뮤니케이션용 분류 용어입니다.</b> 동일 시간대 발화는 아티스트 구분 없이 1개 단위로 묶어 처리(예: 1~10초 발화 = 세그먼트1)한다는 <u>데이터 그룹핑 규칙</u>일 뿐, 실제 화면에 "세그먼트 N"이라는 문구를 그대로 노출하라는 의미가 아닙니다.</li>
-            <li><b>Track No./DSP/아티스트명 컬럼</b>: 음원 트랙이 아니므로 셋 다 <code>-</code>(공란) 처리합니다.</li>
-            <li><b>제목 컬럼(★리터럴 UI 텍스트, lokalise 대상)</b>: 마이크 아이콘 + <code>아티스트 토크 01</code>, <code>아티스트 토크 02</code>… 형식으로, 파티 내 발화 발생 순서대로 2자리 일련번호(01부터)를 붙여 노출합니다. 바로 아래 보조줄에 발화 아티스트명(복수 시 쉼표 구분)과 발화 길이(<code>MM:SS</code>)를 함께 표기합니다 — 별도 컬럼을 새로 만들지 않고 기존 "제목" 컬럼 안에 병기하는 방식입니다.</li>
-            <li><b>③ 발화 시작~종료 시각</b>만 신규 컬럼으로 추가합니다(<code>HH:MM:SS~HH:MM:SS</code>, KST). 세그먼트 행은 실제 발생 시점 기준으로 음원 트랙 사이 Track No 순번 위치에 자동 삽입됩니다.</li>
-            <li>동시 발화 가능 인원 상한: 호스트 포함 최대 20명(호스트 1 + 아티스트 최대 19).</li>
-            <li>세그먼트 행의 발화 아티스트/시작~종료 시각/발화 길이는 시스템이 자동 산출하는 데이터로, Admin/BS 어디서도 직접 편집 대상이 아닙니다(조회 전용).</li>
-            <li><b>이 목업의 보라색 행 배경/좌측 보라색 테두리는 설명 편의를 위한 예시 스타일일 뿐입니다.</b> 반드시 지켜야 하는 것은 노란색으로 표시된 신규 컬럼(③)의 구조·데이터와 위에서 설명한 "제목" 컬럼의 표기 형식이며, 행 배경색 등 시각 스타일 자체는 실제 프로덕트 디자인 컨벤션에 맞게 자유롭게 조정해도 무방합니다.</li>
-            <li>EX-02: 발화 세그먼트 없이 종료된 파티는 세그먼트 행 자체가 미표기(음원 트랙만 노출).</li>
-          </ul>
-        </template>
-        <template id="note-replay-admin">
-          <span class="pop-tag">💬 PRD 설명 — No.2 Replay On/Off</span>
-          <ul>
-            <li>Replay 노출 On/Off: 세그먼트 행에만 제공(음원 트랙 행은 N/A).</li>
-            <li><b>기본값은 무조건 On이 아닙니다.</b> 파티 예약 당시 설정하여 실제 파티에 적용된 파티 전체 <code>다시듣기 지원</code> 값을 그대로 따릅니다 — <code>다시듣기 지원</code>으로 예약된 파티라면 각 세그먼트가 생성될 때 기본 On으로 노출되고, <code>지원 안함</code>으로 예약된 파티는 애초에 다시듣기 자체가 제공되지 않으므로 이 컬럼 전체가 dim 처리됩니다(EX-03 참고). 위 세그먼트 2행은 기본값 On에서 관리자가 개별적으로 Off로 변경한 예시입니다("✎" 표기 참고).</li>
-            <li><b>실제 음원(발화) 파일 자체는 삭제하지 않으므로, On↔Off 양방향으로 언제든 자유롭게 재변경 가능합니다.</b> 파티 전체 단위 <code>다시듣기 지원</code> 토글(하단, 지원→지원안함 단방향)과는 별개의 정책이며 그 단방향 원칙을 따르지 않습니다 — 혼동 주의.</li>
-            <li><b>편집 가능 시점</b>: 세그먼트 데이터 자체가 파티 종료 후에만 생성·노출되며, 그마저도 파티 종료 직후 약 1~2분의 &laquo;리플레이 생성중&raquo; 구간에는 잠금 처리됩니다(No.4 참고 — 위 🧪 데모 버튼으로 직접 확인 가능). 생성이 완료된 이후로는 기간 제한 없이 언제든 즉시 On/Off 전환 가능합니다(별도 편집/저장 버튼 없이 클릭 즉시 반영 — 파티 전체 다시듣기 토글의 편집→적용/취소 절차와 다름).</li>
-            <li>EX-03: 파티 전체 &laquo;다시듣기 지원&raquo;이 &laquo;지원 안함&raquo;이면 Replay On/Off 컬럼 전체 dim 처리.</li>
-          </ul>
-        </template>
-        <template id="note-download-admin">
-          <span class="pop-tag">💬 PRD 설명 — No.3 음성 파일 다운로드</span>
-          <ul>
-            <li>음성 파일 다운로드: 세그먼트 1건당 1파일, 서버 저장 원본 포맷 그대로.</li>
-            <li><b>편집(다운로드) 가능 시점</b>: 파티 종료 후 &laquo;리플레이 생성중&raquo; 구간(약 1~2분, No.4 참고)이 끝나면 그 이후로는 언제든지 항상 가능. 해당 세그먼트의 Replay On/Off 상태 및 파티 전체 &laquo;다시듣기 지원&raquo; 여부와 무관하게 제공(APP/리스너 다운로드 제한과는 별개의 운영 기능).</li>
-            <li>Admin/BS 동일 권한.</li>
-          </ul>
-        </template>
-        <template id="note-genlock-admin">
-          <span class="pop-tag">💬 PRD 설명 — No.4 리플레이 생성중 잠금</span>
-          <ul>
-            <li>음성 송출(아티스트 토크) 기능 특성상, 파티가 종료된다고 바로 다시듣기 콘텐츠가 만들어지는 것이 아니라 서버에서 세그먼트/리플레이 데이터를 생성하는 처리 시간이 필요합니다.</li>
-            <li><b>지속 시간</b>: 파티 종료 시점부터 약 1~2분(정확한 값은 서버 처리 성능 실측 후 개발 단계에서 확정 필요).</li>
-            <li><b>노출 위치/문구</b>: 화면 상단(플레이리스트 영역 위)에 배너로 노출: <code>현재 다시듣기 생성중입니다. 잠시만 기다려 주세요.</code> (신규 lokalise 키 필요)</li>
-            <li><b>잠금 범위</b>: 이 배너가 떠 있는 동안에는 세그먼트별 Replay On/Off 토글, 음성 파일 다운로드 버튼, 파티 전체 <code>다시듣기 지원</code> 편집 버튼이 모두 dim 처리되어 클릭할 수 없습니다. 생성이 끝나면(배너가 사라지면) 별도 새로고침 없이 즉시 모든 항목이 정상 활성화됩니다.</li>
-            <li>Admin/BS 동일 적용.</li>
-            <li>위 🧪 데모 버튼(①생성완료 / ②생성중)을 직접 클릭해 두 상태의 화면 차이를 비교해볼 수 있습니다 — 데모 버튼 자체는 목업 설명용이며 실제 화면 요소가 아닙니다.</li>
-          </ul>
-        </template>
+        
+        
+        
+        
 
         <div class="field-row" style="border-bottom:none;">
           <div class="field-label-col"><span class="field-label plain-label">리스닝 파티 다시듣기</span></div>
           <div class="field-body">
             <div class="radio-group">
               <div>
-                <div class="radio-row"><input type="radio" name="replay" checked><label>다시듣기 지원</label></div>
+                <div class="radio-row"><input type="radio" name="replay" data-checked="true"><label>다시듣기 지원</label></div>
                 <div class="radio-sub">리스닝 파티 종료 후 다시듣기로 자동 전환됩니다. 커뮤니티 사용자들에게 다시듣기가 제공됩니다.</div>
               </div>
               <div>
@@ -497,104 +357,62 @@
           </div>
         </div>
 
-        <button type="button" class="info-trigger info-chip" data-note-id="note-ex04-admin" style="margin-top:16px;">💬 EX-04 이어하기 정책 설명</button>
+        
 
-        <template id="note-ex04-admin">
-          <span class="pop-tag">💬 PRD 설명 — EX-04</span>
-          24시간 초과 종료 파티도 종료 후 24시간 이내에는 이어하기가 가능합니다(최초 호스트가 아니어도 무방). 이어하기 시 &laquo;아티스트 토크 포함&raquo; 토글 값은 승계되지 않고 OFF로 초기화됩니다.
-        </template>
+        
       </div>
     </div>
   </div>
 </div>
-
-<!-- ===== INFO POPOVER (PRD 설명 레이어) — hover 또는 클릭으로 show/hide ===== -->
-<div id="prdPopover" class="prd-popover" role="tooltip"></div>
 <script>
+/* WLP Voice 개발용 클린 버전 — 실제 화면 동작(토글/아코디언)만 */
 (function(){
-  var pop = document.getElementById('prdPopover');
-  if(!pop) return;
-  var pinned=false, hideTimer=null, showTimer=null, current=null;
+  if(window.__wlpDevInit) return; window.__wlpDevInit = true;
 
-  function render(trigger){
-    var tplId = trigger.getAttribute('data-note-id');
-    var tpl = tplId && document.getElementById(tplId);
-    if(!tpl) return false;
-    pop.innerHTML = tpl.innerHTML;
-    return true;
-  }
-  function position(trigger){
-    var r = trigger.getBoundingClientRect();
-    pop.style.left='-9999px'; pop.style.top='0px';
-    pop.classList.add('show');
-    var pw = pop.offsetWidth, ph = pop.offsetHeight;
-    var vw = window.innerWidth, vh = window.innerHeight;
-    var left = r.left;
-    var top = r.bottom + 10;
-    if(left + pw > vw - 12) left = Math.max(12, vw - pw - 12);
-    if(top + ph > vh - 12){ top = r.top - ph - 10; }
-    pop.style.left = Math.max(12,left) + 'px';
-    pop.style.top = Math.max(12,top) + 'px';
-  }
-  function show(trigger){
-    if(!render(trigger)) return;
-    position(trigger);
-    current = trigger;
-  }
-  function hide(){
-    pop.classList.remove('show');
-    pinned=false; current=null;
-  }
-  document.querySelectorAll('.info-trigger[data-note-id]').forEach(function(trigger){
-    trigger.setAttribute('tabindex','0');
-    trigger.addEventListener('mouseenter', function(){
-      clearTimeout(hideTimer); clearTimeout(showTimer);
-      showTimer = setTimeout(function(){ show(trigger); }, 100);
-    });
-    trigger.addEventListener('mouseleave', function(){
-      clearTimeout(showTimer);
-      if(pinned) return;
-      hideTimer = setTimeout(hide, 220);
-    });
-    trigger.addEventListener('click', function(e){
-      e.stopPropagation();
-      if(current===trigger && pop.classList.contains('show')){
-        pinned = !pinned;
-        if(!pinned) hide();
-      } else {
-        pinned = true;
-        show(trigger);
-      }
-    });
-    trigger.addEventListener('keydown', function(e){
-      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); trigger.click(); }
-    });
-  });
-  pop.addEventListener('mouseenter', function(){ clearTimeout(hideTimer); });
-  pop.addEventListener('mouseleave', function(){ if(!pinned) hideTimer=setTimeout(hide,220); });
   document.addEventListener('click', function(e){
-    if(pop.classList.contains('show') && !pop.contains(e.target) && (!current || !current.contains(e.target))){
-      hide();
+    var eb = e.target.closest && e.target.closest('.btn-edit');
+    if(eb){ var sect = eb.closest('.sect'); if(sect) sect.classList.toggle('editing'); }
+  });
+
+  function applyChecked(){
+    document.querySelectorAll('input[data-checked]').forEach(function(el){ if(!el.checked) el.checked = true; });
+  }
+  applyChecked();
+  if(window.MutationObserver){
+    new MutationObserver(applyChecked).observe(document.documentElement, {childList:true, subtree:true});
+  }
+
+
+  document.addEventListener('click', function(e){
+    var acc = e.target.closest && e.target.closest('.acc-btn');
+    if(acc){ var tb = acc.closest('tbody.track'); if(tb) tb.classList.toggle('open'); return; }
+
+    var lockT = e.target.closest && e.target.closest('.toggle.disabled');
+    if(lockT){
+      lockT.classList.remove('dim-flash'); void lockT.offsetWidth; lockT.classList.add('dim-flash');
+      var b0 = lockT.closest('.field-body');
+      var ln = b0 && b0.querySelector('.lock-notice');
+      if(ln) ln.classList.add('show');
+      return;
+    }
+
+    var t = e.target.closest && e.target.closest('.toggle:not(.disabled)');
+    if(t){
+      var isOn = t.classList.toggle('on');
+      var scope = t.closest('.val') || t.closest('.field-body') || t.parentElement;
+      scope.querySelectorAll('.toggle-state').forEach(function(st){
+        st.textContent = isOn ? 'ON' : 'OFF';
+        st.classList.toggle('is-on', isOn);
+      });
+      var body = t.closest('.field-body') || t.closest('.val') || t.parentElement.parentElement;
+      var notice = body && body.querySelector('.talk-notice');
+      if(notice) notice.classList.toggle('show', isOn);
+      var ae = body && body.querySelector('.auto-end');
+      if(ae) ae.style.display = isOn ? 'block' : 'none';
     }
   });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') hide(); });
-  window.addEventListener('resize', function(){ if(current) position(current); });
-  window.addEventListener('scroll', function(){ if(current) position(current); }, true);
 })();
 
-// ===== 목업 전용: 리플레이 생성중 / 생성완료 상태 데모 스위치 =====
-(function(){
-  var btnReady = document.getElementById('btnStateReady');
-  var btnGen = document.getElementById('btnStateGenerating');
-  var banner = document.getElementById('genBanner');
-  if(!btnReady || !btnGen || !banner) return;
-  function setState(generating){
-    btnReady.classList.toggle('active', !generating);
-    btnGen.classList.toggle('active', generating);
-    banner.classList.toggle('hidden', !generating);
-    document.body.classList.toggle('demo-generating', generating);
-  }
-  btnReady.addEventListener('click', function(){ setState(false); });
-  btnGen.addEventListener('click', function(){ setState(true); });
-})();
 </script>
+</body>
+</html>

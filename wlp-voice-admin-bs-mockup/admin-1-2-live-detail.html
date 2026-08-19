@@ -1,6 +1,11 @@
-<title>ADMIN 1-2. 진행 중 파티 상세 (목업, 신규 화면)</title>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADMIN 1-2. 진행 중 파티 상세 — 개발용 클린 버전</title>
 <style>
-  :root{
+:root{
     --navy: #0b1226;
     --cyan: #00c9c0;
     --cyan-dark: #00a8a0;
@@ -20,8 +25,8 @@
     --note-tag: #5b6270;
     --note-text: #585f6c;
   }
-  *{box-sizing:border-box;}
-  body{
+*{box-sizing:border-box;}
+body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",Segoe UI,Roboto,sans-serif;
     color:var(--text);
@@ -29,214 +34,120 @@
     font-size:13px;
     line-height:1.5;
   }
-  .app{display:flex;min-height:100vh;}
-
-  /* ===== GNB ===== */
+.app{display:flex;min-height:100vh;}
+/* ===== GNB ===== */
   .gnb{
     width:212px;flex:0 0 212px;background:var(--navy);color:#c9cdd8;
     display:flex;flex-direction:column;position:sticky;top:0;height:100vh;
   }
-  .gnb-logo{
+.gnb-logo{
     display:flex;align-items:center;gap:8px;padding:16px 16px;
     color:#fff;font-weight:700;font-size:14px;border-bottom:1px solid rgba(255,255,255,.08);
   }
-  .gnb-logo .mark{
+.gnb-logo .mark{
     width:22px;height:22px;border-radius:5px;background:var(--cyan);
     color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;
   }
-  .gnb-menu{flex:1;overflow-y:auto;padding:8px 0;}
-  .gnb-item{
+.gnb-menu{flex:1;overflow-y:auto;padding:8px 0;}
+.gnb-item{
     padding:9px 16px;font-size:12.5px;color:#aab0c0;cursor:default;
     display:flex;align-items:center;justify-content:space-between;
   }
-  .gnb-item .chev{font-size:10px;opacity:.5;}
-  .gnb-item.active-group{color:#fff;font-weight:600;}
-  .gnb-sub{background:rgba(255,255,255,.02);}
-  .gnb-sub .gnb-subitem{padding:8px 16px 8px 30px;font-size:12.5px;color:#9aa1b3;}
-  .gnb-sub .gnb-subitem.active{
+.gnb-item .chev{font-size:10px;opacity:.5;}
+.gnb-item.active-group{color:#fff;font-weight:600;}
+.gnb-sub{background:rgba(255,255,255,.02);}
+.gnb-sub .gnb-subitem{padding:8px 16px 8px 30px;font-size:12.5px;color:#9aa1b3;}
+.gnb-sub .gnb-subitem.active{
     background:rgba(0,201,192,.14);color:var(--cyan);font-weight:700;
     border-left:3px solid var(--cyan);padding-left:27px;
   }
-  .gnb-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);color:#7a8193;font-size:16px;}
-
-  /* ===== MAIN ===== */
+.gnb-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);color:#7a8193;font-size:16px;}
+/* ===== MAIN ===== */
   .main{flex:1;min-width:0;display:flex;flex-direction:column;}
-  .topbar{
+.topbar{
     height:44px;background:#fff;border-bottom:1px solid var(--border);
     display:flex;align-items:center;justify-content:space-between;
     padding:0 20px;font-size:12px;color:var(--text-sub);flex:0 0 auto;
   }
-  .topbar .crumb b{color:var(--text);font-weight:600;}
-  .topbar .right{display:flex;gap:14px;align-items:center;color:var(--text-sub);}
-  .topbar .right span{cursor:default;}
-
-  .content-wrap{padding:22px 28px 60px;max-width:1200px;}
-  .title-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
-  .page-title{font-size:19px;font-weight:700;margin:0;}
-  .page-sub{color:var(--text-sub);font-size:12px;margin:0 0 18px;}
-
-  .status-pill{
+.topbar .crumb b{color:var(--text);font-weight:600;}
+.topbar .right{display:flex;gap:14px;align-items:center;color:var(--text-sub);}
+.topbar .right span{cursor:default;}
+.content-wrap{padding:22px 28px 60px;max-width:1200px;}
+.title-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.page-title{font-size:19px;font-weight:700;margin:0;}
+.status-pill{
     display:inline-flex;align-items:center;gap:5px;
     font-size:11px;font-weight:800;border-radius:20px;padding:4px 11px;
     letter-spacing:.2px;
   }
-  .status-pill .dot{width:6px;height:6px;border-radius:50%;}
-  .status-pill.on-party{background:#e3fbf9;color:#007b74;}
-  .status-pill.on-party .dot{background:var(--cyan-dark);}
-
-  .legend{
-    display:flex;gap:16px;align-items:center;margin-bottom:16px;
-    font-size:12px;color:var(--text-sub);flex-wrap:wrap;
-  }
-  .legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-2px;}
-  .legend .sw-yellow{background:var(--yellow-border);border:1px solid var(--yellow-border-strong);}
-  .legend .sw-note{background:var(--note-bg);border:1px dashed var(--note-border);}
-  .legend .sw-no{background:linear-gradient(180deg,#ff9a3d,#ff7a00);border:1px solid #e56800;}
-
-  /* ===== FORM CARD ===== */
+.status-pill .dot{width:6px;height:6px;border-radius:50%;}
+.status-pill.on-party{background:#e3fbf9;color:#007b74;}
+.status-pill.on-party .dot{background:var(--cyan-dark);}
+/* ===== FORM CARD ===== */
   .form-card{
     max-width:900px;background:#fff;border:1px solid var(--border);border-radius:6px;
     padding:20px 28px 30px;
   }
-  .card-toolbar{display:flex;justify-content:flex-end;gap:8px;padding-bottom:14px;border-bottom:1px solid #f1f2f4;margin-bottom:4px;}
-
-  .field-row{display:flex;padding:13px 0;border-bottom:1px solid #f1f2f4;gap:18px;}
-  .field-row:first-of-type{padding-top:2px;}
-  .field-label-col{flex:0 0 190px;display:flex;align-items:flex-start;gap:5px;padding-top:2px;}
-  .field-label{flex:1 1 auto;min-width:0;font-weight:700;font-size:13px;color:var(--text);}
-  .num-badge{
-    flex:0 0 auto;width:18px;height:18px;border-radius:50%;border:1px solid var(--border-strong);
-    color:var(--text-sub);font-size:10.5px;display:flex;align-items:center;justify-content:center;
-    background:#fafafa;font-weight:600;margin-top:1px;
-  }
-  .no-tag{line-height:normal;
-    flex:0 0 auto;font-size:10px;font-weight:800;color:#fff;
-    background:linear-gradient(180deg,#ff9a3d,#ff7a00);border:1px solid #e56800;
-    border-radius:3px;padding:2px 6px;margin-top:1px;letter-spacing:.2px;white-space:nowrap;
-    box-shadow:0 1px 2px rgba(255,122,0,.35);
-  }
-  .field-body{flex:1;min-width:0;}
-  .view-value{font-size:13px;color:var(--text);}
-  .view-value.muted{color:var(--text-sub);}
-  .view-value a{color:var(--cyan-dark);text-decoration:none;}
-  .help-text{color:var(--text-sub);font-size:11.5px;margin-top:6px;line-height:1.6;}
-
-  .thumb-box{
+.card-toolbar{display:flex;justify-content:flex-end;gap:8px;padding-bottom:14px;border-bottom:1px solid #f1f2f4;margin-bottom:4px;}
+.field-row{display:flex;padding:13px 0;border-bottom:1px solid #f1f2f4;gap:18px;}
+.field-row:first-of-type{padding-top:2px;}
+.field-label-col{flex:0 0 190px;display:flex;align-items:flex-start;gap:5px;padding-top:2px;}
+.field-label{flex:1 1 auto;min-width:0;font-weight:700;font-size:13px;color:var(--text);}
+.field-body{flex:1;min-width:0;}
+.view-value{font-size:13px;color:var(--text);}
+.view-value.muted{color:var(--text-sub);}
+.view-value a{color:var(--cyan-dark);text-decoration:none;}
+.help-text{color:var(--text-sub);font-size:11.5px;margin-top:6px;line-height:1.6;}
+.thumb-box{
     width:96px;height:96px;border-radius:6px;background:#e9eaee;
     display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;
     color:var(--cyan);border:1px solid var(--border);
   }
-
-  table.title-table{width:100%;border-collapse:collapse;font-size:12.5px;}
-  table.title-table th{
+table.title-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+table.title-table th{
     text-align:left;font-weight:600;color:var(--text-sub);font-size:11.5px;
     padding:6px 10px;border-bottom:1px solid var(--border);
   }
-  table.title-table td{padding:10px;vertical-align:top;}
-  .lang-cell{width:110px;color:var(--text-sub);}
-  .title-cell-row{background:var(--mint-bg);border:1px solid var(--mint-border);border-radius:4px;}
-  .ro-box{
+table.title-table td{padding:10px;vertical-align:top;}
+.lang-cell{width:110px;color:var(--text-sub);}
+.title-cell-row{background:var(--mint-bg);border:1px solid var(--mint-border);border-radius:4px;}
+.ro-box{
     border:1px solid var(--border-strong);border-radius:4px;background:#fff;
     padding:8px 10px;font-size:12.5px;color:var(--text);
   }
-  .ro-box + .ro-box{margin-top:6px;}
-  .char-count{float:right;font-size:10.5px;color:var(--text-faint);}
-
-  table.playlist-table{width:100%;border-collapse:collapse;font-size:12px;}
-  table.playlist-table th{
+.ro-box + .ro-box{margin-top:6px;}
+.char-count{float:right;font-size:10.5px;color:var(--text-faint);}
+table.playlist-table{width:100%;border-collapse:collapse;font-size:12px;}
+table.playlist-table th{
     text-align:left;font-weight:600;color:var(--text-sub);font-size:11.5px;
     padding:8px 10px;border-bottom:1px solid var(--border);background:#fafbfc;
   }
-  table.playlist-table td{padding:9px 10px;color:var(--text);border-bottom:1px solid #f5f6f8;}
-  .dsp-icons{display:flex;gap:4px;}
-  .dsp-icons span{width:16px;height:16px;border-radius:3px;background:#eee;display:inline-block;font-size:10px;text-align:center;line-height:16px;}
-
-  .radio-group{display:flex;flex-direction:column;gap:10px;}
-  .radio-row{display:flex;align-items:flex-start;gap:8px;}
-  .radio-row input[type=radio]{width:16px;height:16px;accent-color:var(--cyan-dark);margin-top:2px;flex:0 0 auto;}
-  .radio-row label{font-size:13px;}
-  .radio-sub{color:var(--text-sub);font-size:11.5px;margin-top:2px;line-height:1.6;}
-
-  /* new-item highlight */
-  .field-row.new-item{
-    background:var(--yellow-bg);border:1px solid var(--yellow-border);border-radius:6px;
-    margin:6px 0;padding:14px 14px;
-  }
-  .new-tag{
-    display:inline-flex;align-items:center;background:var(--yellow-border-strong);color:#3a2c00;
-    font-size:10px;font-weight:800;border-radius:3px;padding:1px 6px;margin-left:8px;letter-spacing:.3px;
-  }
-
-  .talk-badge{
+table.playlist-table td{padding:9px 10px;color:var(--text);border-bottom:1px solid #f5f6f8;}
+.dsp-icons{display:flex;gap:4px;}
+.dsp-icons span{width:16px;height:16px;border-radius:3px;background:#eee;display:inline-block;font-size:10px;text-align:center;line-height:16px;}
+.radio-group{display:flex;flex-direction:column;gap:10px;}
+.radio-row{display:flex;align-items:flex-start;gap:8px;}
+.radio-row input[type=radio]{width:16px;height:16px;accent-color:var(--cyan-dark);margin-top:2px;flex:0 0 auto;}
+.radio-row label{font-size:13px;}
+.radio-sub{color:var(--text-sub);font-size:11.5px;margin-top:2px;line-height:1.6;}
+.talk-badge{
     display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;
     border-radius:20px;padding:4px 12px;letter-spacing:.2px;
   }
-  .talk-badge.on{background:var(--cyan);color:#012826;}
-  .talk-badge.off{background:#e9eaee;color:var(--text-sub);}
-  .lock-note{
-    display:inline-flex;align-items:center;gap:4px;color:var(--text-faint);font-size:11px;margin-left:10px;
-  }
-  .auto-end{
+.talk-badge.on{background:var(--cyan);color:#012826;}
+.talk-badge.off{background:#e9eaee;color:var(--text-sub);}
+.auto-end{
     margin-top:8px;font-size:12px;color:#8a1a1e;font-weight:600;
     background:#fff;border:1px solid #f3c2c4;border-radius:4px;padding:7px 10px;display:inline-block;
   }
-
-  /* ===== PRD 설명(코멘트) 박스 ===== */
-  .prd-note{
-    margin-top:10px;border:1px dashed var(--note-border);background:var(--note-bg);
-    border-radius:5px;padding:9px 11px;display:flex;gap:8px;align-items:flex-start;
-  }
-  .prd-note .note-tag{
-    flex:0 0 auto;background:var(--note-tag);color:#fff;font-size:9.5px;font-weight:800;
-    border-radius:3px;padding:2px 6px;white-space:nowrap;letter-spacing:.2px;margin-top:1px;
-  }
-  .prd-note .note-body{font-size:11px;color:var(--note-text);line-height:1.65;}
-  .prd-note .note-body b{color:#3d4250;}
-  .prd-note .note-body ul{margin:4px 0 0;padding-left:15px;}
-  .prd-note .note-body li{margin-bottom:3px;}
-  .prd-note .note-body>.lead{color:#8a1a1e;font-weight:700;}
-
-  .btn{
+.btn{
     height:32px;padding:0 16px;border-radius:4px;font-size:12.5px;font-weight:600;
     border:1px solid var(--border-strong);background:#fff;color:var(--text);cursor:default;
     display:flex;align-items:center;gap:6px;
   }
-
-  /* ===== INFO POPOVER SYSTEM (2026-08 개편: 설명은 hover/click 시에만 노출, 실제 화면 개입 최소화) ===== */
-  .info-trigger{cursor:pointer;user-select:none;}
-  .info-dot{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:16px;height:16px;border-radius:50%;flex:0 0 auto;
-    background:#eef0f4;color:#6b7280;font-size:10px;font-weight:800;
-    border:1px solid #d7dbe1;
-  }
-  .info-dot:hover,.info-dot:focus{background:#00c9c0;color:#012826;border-color:#00a8a0;outline:none;}
-  .no-tag.info-trigger:hover,.no-tag.info-trigger:focus{box-shadow:0 0 0 3px rgba(0,201,192,.4);outline:none;}
-  .info-chip{
-    display:inline-flex;align-items:center;gap:5px;
-    background:#eef0f4;color:#525866;font-size:11px;font-weight:700;
-    border:1px solid #d7dbe1;border-radius:20px;padding:4px 11px;margin-top:8px;
-  }
-  .info-chip:hover,.info-chip:focus{background:#1b1f28;color:#fff;border-color:#1b1f28;outline:none;}
-  .prd-popover{
-    display:none;position:fixed;z-index:2000;max-width:300px;
-    background:#1b1f28;color:#e7e9ee;border-radius:8px;
-    padding:11px 13px;font-size:11px;line-height:1.65;
-    box-shadow:0 10px 28px rgba(0,0,0,.32);
-  }
-  .prd-popover.show{display:block;}
-  .prd-popover .pop-tag{
-    display:inline-flex;align-items:center;background:#5b6270;color:#fff;
-    font-size:9.5px;font-weight:800;border-radius:3px;padding:2px 6px;
-    letter-spacing:.2px;margin-bottom:6px;
-  }
-  .prd-popover .lead{color:#ff9a9d;font-weight:700;display:block;margin-bottom:5px;}
-  .prd-popover b{color:#ffd479;}
-  .prd-popover ul{margin:4px 0 0;padding-left:15px;}
-  .prd-popover li{margin-bottom:4px;}
-  .prd-popover code{background:rgba(255,255,255,.14);padding:1px 4px;border-radius:3px;}
 </style>
-
+</head>
+<body>
 <div class="app">
   <aside class="gnb">
     <div class="gnb-logo"><span class="mark">W</span> Weverse Admin</div>
@@ -281,20 +192,17 @@
       <div class="title-row">
         <h1 class="page-title">리스닝파티 상세 정보</h1>
       </div>
-      <p class="page-sub">목업 참고: PRD &laquo;ADMIN/BS - 공식 파티 아티스트 음성 송출&raquo; v8 · 1-2. 진행 중 파티 상세 화면(신규) · 기존 상세 화면(02_종료파티상세_플레이리스트.jpg) 레이아웃을 진행 중 상태로 재구성 + 신규 view-only 항목 1개 삽입</p>
+      
 
-      <div class="legend">
-        <span><span class="swatch sw-yellow"></span>이번 스펙에서 신규 삽입된 항목</span>
-        <span><span class="no-tag" style="display:inline-flex;vertical-align:1px;">No.1</span> PRD Description/Note 표에 정의된 항목 — <b>오렌지 배지에 마우스를 올리거나 클릭하면 PRD 설명이 표시됩니다</b></span>
-      </div>
+      
 
-      <div class="form-card">
+      <div class="form-card" style="width: 1019px; height: 1287px">
         <div class="card-toolbar">
           <div class="btn">🔄 새로고침</div>
           <div class="btn">← 돌아가기</div>
         </div>
 
-        <!-- 기존 view-only 필드 — 02_종료파티상세_플레이리스트.jpg 패턴 그대로, 번호배지 없음(PRD가 별도 넘버링하지 않은 기존 항목) -->
+        
         <div class="field-row">
           <div class="field-label-col"><span class="field-label" style="font-weight:600;color:var(--text-sub);">게시 커뮤니티</span></div>
           <div class="field-body"><span class="view-value">BTS</span></div>
@@ -337,34 +245,17 @@
           <div class="field-label-col"><span class="field-label" style="font-weight:600;color:var(--text-sub);">리스닝 파티 시작 시간</span></div>
           <div class="field-body"><span class="view-value">2026-08-06 15:00</span></div>
         </div>
-
-        <!-- ① [신규] 아티스트 토크 포함 여부 — view only, 시작 시간 바로 아래 삽입 -->
-        <div class="field-row new-item">
+        <div class="field-row">
           <div class="field-label-col">
-            <span class="num-badge">①</span>
-            <span class="no-tag info-trigger" data-note-id="note-talk-status-admin" title="PRD 설명 보기">No.1</span>
-            <span class="field-label">아티스트 토크 포함 여부<span class="new-tag">NEW</span></span>
+            
+            
+            <span class="field-label">아티스트 토크 포함 여부</span>
           </div>
           <div class="field-body">
             <span class="talk-badge on">ON</span>
-            <span class="lock-note">🔒 view only · 수정 불가</span>
             <div class="auto-end">자동 종료 예정 일시: 2026-08-07 15:00 (시작 일시 + 24시간)</div>
           </div>
         </div>
-
-        <template id="note-talk-status-admin">
-          <span class="pop-tag">💬 PRD 설명</span>
-          <span class="lead">개발 반영 대상 아님 — 아래는 실제 화면 문구가 아닌 로직 이해용 배경 설명입니다.</span>
-          <ul>
-            <li>대기모드(Standby) 상태 파티도 &laquo;진행 중&raquo; 분류에 포함됨(호스트 대기모드 진입 시점부터 시작으로 간주).</li>
-            <li>공식 파티는 &laquo;무활동 15분 자동 종료&raquo; 정책 미적용(호스트 부재해도 계속 진행).</li>
-            <li>발화 세그먼트 관련 정보는 진행 중 화면에는 미노출(종료 후에만 제공, 1-3 참고).</li>
-            <li>그 외 기존 &laquo;방송 중&raquo; 상세 정책(전항목 수정 불가) 그대로 유지.</li>
-            <li>EX-01: 토크 포함 파티가 24시간을 초과하면 자동 강제 종료됩니다(별도 화면 없이 종료 안내 후 파티엔드로 이탈).</li>
-          </ul>
-        </template>
-
-        <!-- 기존 view-only 필드 계속 -->
         <div class="field-row">
           <div class="field-label-col"><span class="field-label" style="font-weight:600;color:var(--text-sub);">썸네일</span></div>
           <div class="field-body"><div class="thumb-box">W</div></div>
@@ -374,7 +265,7 @@
           <div class="field-label-col"><span class="field-label" style="font-weight:600;color:var(--text-sub);">제목 및 내용</span></div>
           <div class="field-body">
             <table class="title-table">
-              <tr><th style="width:110px;">언어</th><th>제목 및 내용</th></tr>
+              <tbody><tr><th style="width:110px;">언어</th><th>제목 및 내용</th></tr>
               <tr class="title-cell-row">
                 <td class="lang-cell">한국어</td>
                 <td>
@@ -382,7 +273,7 @@
                   <div class="ro-box">함께 들어요! 오늘 새 앨범 리스닝 파티에 초대합니다. <span class="char-count">27/100</span></div>
                 </td>
               </tr>
-            </table>
+            </tbody></table>
           </div>
         </div>
 
@@ -390,117 +281,88 @@
           <div class="field-label-col"><span class="field-label" style="font-weight:600;color:var(--text-sub);">리스닝 파티 플레이리스트</span></div>
           <div class="field-body">
             <table class="playlist-table">
-              <tr><th style="width:60px;">Track No.</th><th style="width:150px;">DSP</th><th style="width:120px;">아티스트명</th><th>제목</th></tr>
+              <tbody><tr><th style="width:60px;">Track No.</th><th style="width:150px;">DSP</th><th style="width:120px;">아티스트명</th><th>제목</th></tr>
               <tr><td>1.</td><td>SPOTIFY<br><span class="view-value muted" style="font-size:11px;">대한민국(KR)</span></td><td>BTS</td><td>Dynamite <span class="dsp-icons" style="display:inline-flex;"><span>♪</span><span>🟢</span><span>🟩</span></span></td></tr>
               <tr><td>2.</td><td>SPOTIFY<br><span class="view-value muted" style="font-size:11px;">대한민국(KR)</span></td><td>BTS</td><td>Butter <span class="dsp-icons" style="display:inline-flex;"><span>♪</span><span>🟢</span><span>🟩</span></span></td></tr>
               <tr><td>3.</td><td>SPOTIFY<br><span class="view-value muted" style="font-size:11px;">대한민국(KR)</span></td><td>BTS</td><td>작은 것들을 위한 시 (Boy With Luv) (feat. Halsey) <span class="dsp-icons" style="display:inline-flex;"><span>♪</span><span>🟢</span><span>🟩</span></span></td></tr>
-            </table>
-            <button type="button" class="info-trigger info-chip" data-note-id="note-playlist-cols-admin">💬 컬럼 구성 설명</button>
+            </tbody></table>
+            
           </div>
         </div>
 
-        <template id="note-playlist-cols-admin">
-          <span class="pop-tag">💬 PRD 설명</span>
-          진행 중 화면에서는 발화 세그먼트/신규 컬럼(발화아티스트·시각·길이·Replay·다운로드)이 노출되지 않습니다. 해당 컬럼들은 <b>종료 후 상세 화면(1-3)</b>에서만 제공됩니다.
-        </template>
+        
 
         <div class="field-row" style="border-bottom:none;">
           <div class="field-label-col"><span class="field-label" style="font-weight:600;color:var(--text-sub);">리스닝 파티 다시듣기</span></div>
           <div class="field-body">
             <div class="radio-group">
               <div>
-                <div class="radio-row"><input type="radio" name="replay" checked disabled><label>다시듣기 지원</label></div>
+                <div class="radio-row"><input type="radio" name="replay" data-checked="true" disabled=""><label>다시듣기 지원</label></div>
                 <div class="radio-sub">리스닝 파티 종료 후 다시듣기로 자동 전환됩니다.</div>
               </div>
               <div>
-                <div class="radio-row"><input type="radio" name="replay" disabled><label>지원 안함</label></div>
+                <div class="radio-row"><input type="radio" name="replay" disabled=""><label>지원 안함</label></div>
               </div>
             </div>
           </div>
         </div>
 
-        <button type="button" class="info-trigger info-chip" data-note-id="note-broadcast-policy-admin" style="margin-top:16px;">💬 방송 중 상세 정책 설명</button>
+        
 
-        <template id="note-broadcast-policy-admin">
-          <span class="pop-tag">💬 PRD 설명</span>
-          <b>방송 중 상세 정책</b> — 이 화면의 전 항목은 조회 전용(view only)이며 수정 불가입니다. 이는 신규 항목(①)에만 적용되는 예외가 아니라 기존 &laquo;방송 중&raquo; 상세 화면 전체에 이미 적용되어 있던 정책입니다.
-        </template>
+        
       </div>
     </div>
   </div>
 </div>
-
-<!-- ===== INFO POPOVER (PRD 설명 레이어) — hover 또는 클릭으로 show/hide ===== -->
-<div id="prdPopover" class="prd-popover" role="tooltip"></div>
 <script>
+/* WLP Voice 개발용 클린 버전 — 실제 화면 동작(토글/아코디언)만 */
 (function(){
-  var pop = document.getElementById('prdPopover');
-  if(!pop) return;
-  var pinned=false, hideTimer=null, showTimer=null, current=null;
+  if(window.__wlpDevInit) return; window.__wlpDevInit = true;
 
-  function render(trigger){
-    var tplId = trigger.getAttribute('data-note-id');
-    var tpl = tplId && document.getElementById(tplId);
-    if(!tpl) return false;
-    pop.innerHTML = tpl.innerHTML;
-    return true;
-  }
-  function position(trigger){
-    var r = trigger.getBoundingClientRect();
-    pop.style.left='-9999px'; pop.style.top='0px';
-    pop.classList.add('show');
-    var pw = pop.offsetWidth, ph = pop.offsetHeight;
-    var vw = window.innerWidth, vh = window.innerHeight;
-    var left = r.left;
-    var top = r.bottom + 10;
-    if(left + pw > vw - 12) left = Math.max(12, vw - pw - 12);
-    if(top + ph > vh - 12){ top = r.top - ph - 10; }
-    pop.style.left = Math.max(12,left) + 'px';
-    pop.style.top = Math.max(12,top) + 'px';
-  }
-  function show(trigger){
-    if(!render(trigger)) return;
-    position(trigger);
-    current = trigger;
-  }
-  function hide(){
-    pop.classList.remove('show');
-    pinned=false; current=null;
-  }
-  document.querySelectorAll('.info-trigger[data-note-id]').forEach(function(trigger){
-    trigger.setAttribute('tabindex','0');
-    trigger.addEventListener('mouseenter', function(){
-      clearTimeout(hideTimer); clearTimeout(showTimer);
-      showTimer = setTimeout(function(){ show(trigger); }, 100);
-    });
-    trigger.addEventListener('mouseleave', function(){
-      clearTimeout(showTimer);
-      if(pinned) return;
-      hideTimer = setTimeout(hide, 220);
-    });
-    trigger.addEventListener('click', function(e){
-      e.stopPropagation();
-      if(current===trigger && pop.classList.contains('show')){
-        pinned = !pinned;
-        if(!pinned) hide();
-      } else {
-        pinned = true;
-        show(trigger);
-      }
-    });
-    trigger.addEventListener('keydown', function(e){
-      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); trigger.click(); }
-    });
-  });
-  pop.addEventListener('mouseenter', function(){ clearTimeout(hideTimer); });
-  pop.addEventListener('mouseleave', function(){ if(!pinned) hideTimer=setTimeout(hide,220); });
   document.addEventListener('click', function(e){
-    if(pop.classList.contains('show') && !pop.contains(e.target) && (!current || !current.contains(e.target))){
-      hide();
+    var eb = e.target.closest && e.target.closest('.btn-edit');
+    if(eb){ var sect = eb.closest('.sect'); if(sect) sect.classList.toggle('editing'); }
+  });
+
+  function applyChecked(){
+    document.querySelectorAll('input[data-checked]').forEach(function(el){ if(!el.checked) el.checked = true; });
+  }
+  applyChecked();
+  if(window.MutationObserver){
+    new MutationObserver(applyChecked).observe(document.documentElement, {childList:true, subtree:true});
+  }
+
+
+  document.addEventListener('click', function(e){
+    var acc = e.target.closest && e.target.closest('.acc-btn');
+    if(acc){ var tb = acc.closest('tbody.track'); if(tb) tb.classList.toggle('open'); return; }
+
+    var lockT = e.target.closest && e.target.closest('.toggle.disabled');
+    if(lockT){
+      lockT.classList.remove('dim-flash'); void lockT.offsetWidth; lockT.classList.add('dim-flash');
+      var b0 = lockT.closest('.field-body');
+      var ln = b0 && b0.querySelector('.lock-notice');
+      if(ln) ln.classList.add('show');
+      return;
+    }
+
+    var t = e.target.closest && e.target.closest('.toggle:not(.disabled)');
+    if(t){
+      var isOn = t.classList.toggle('on');
+      var scope = t.closest('.val') || t.closest('.field-body') || t.parentElement;
+      scope.querySelectorAll('.toggle-state').forEach(function(st){
+        st.textContent = isOn ? 'ON' : 'OFF';
+        st.classList.toggle('is-on', isOn);
+      });
+      var body = t.closest('.field-body') || t.closest('.val') || t.parentElement.parentElement;
+      var notice = body && body.querySelector('.talk-notice');
+      if(notice) notice.classList.toggle('show', isOn);
+      var ae = body && body.querySelector('.auto-end');
+      if(ae) ae.style.display = isOn ? 'block' : 'none';
     }
   });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') hide(); });
-  window.addEventListener('resize', function(){ if(current) position(current); });
-  window.addEventListener('scroll', function(){ if(current) position(current); }, true);
 })();
+
 </script>
+</body>
+</html>
